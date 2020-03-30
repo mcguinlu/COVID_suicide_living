@@ -39,5 +39,5 @@ print('Number of RSS posts : {}'.format(len(NewsFeed.entries)))
 print('Number of titles : {}'.format(len(title)))
 
 df= pd.DataFrame(list(zip(title, abstract, authors,link,ID,publication_date,update_date, subject, is_medRxiv)), columns=["title", "abstract", "authors","link","ID","publication_date","update_date", "subject", "is_medRxiv"])
-df.to_csv("bioRxiv_rss.csv")
+df.to_csv("data/bioRxiv_rss.csv")
 print(df.head())

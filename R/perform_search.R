@@ -32,7 +32,7 @@ perform_search <- function(query,
 ){
   
   . <- NULL
-  node <- NULL
+  link <- NULL
   link_group <- NULL
   or_1 <- NULL
   or_2 <- NULL
@@ -78,8 +78,8 @@ perform_search <- function(query,
         dplyr::filter_at(dplyr::vars(fields),
                          dplyr::any_vars(grepl(paste(query[[list]],
                                                      collapse = '|'), .))) %>%
-        dplyr::select(node)
-      tmp <- tmp$node
+        dplyr::select(link)
+      tmp <- tmp$link
       and_list[[list]] <- tmp
     }
     
@@ -94,9 +94,9 @@ perform_search <- function(query,
       dplyr::filter_at(dplyr::vars(fields),
                        dplyr::any_vars(grepl(paste(query,
                                                    collapse = '|'), .))) %>%
-      dplyr::select(node)
+      dplyr::select(link)
     
-    and <- tmp$node
+    and <- tmp$link
     
   }
   
@@ -107,11 +107,11 @@ perform_search <- function(query,
       dplyr::filter_at(dplyr::vars(fields),
                        dplyr::any_vars(grepl(paste(NOT,
                                                    collapse = '|'), .))) %>%
-      dplyr::select(node)
+      dplyr::select(link)
     
     `%notin%` <- Negate(`%in%`)
     
-    and <- and[and %notin% tmp$node]
+    and <- and[and %notin% tmp$link]
     
     results <- and
     
@@ -121,12 +121,12 @@ perform_search <- function(query,
   
   
   if(length(query) > 1){
-    mx_results <- mx_data[which(mx_data$node %in% results),]
+    mx_results <- mx_data[which(mx_data$link %in% results),]
   } else {
     if(query == "*") {
       mx_results <- mx_data
     } else {
-      mx_results <- mx_data[which(mx_data$node %in% results),]
+      mx_results <- mx_data[which(mx_data$link %in% results),]
     }
   }
   
@@ -148,7 +148,7 @@ perform_search <- function(query,
     
     # Post message and return dataframe
     message(paste0("Found ",
-                   length(mx_results$node),
+                   length(mx_results$link),
                    " record(s) matching your search."))
     
     mx_results
@@ -157,7 +157,7 @@ perform_search <- function(query,
     
     # Post message and return dataframe
     message(paste0("Found ",
-                   length(mx_results$node),
+                   length(mx_results$link),
                    " record(s) matching your search.\n",
                    "Note, there may be >1 version of the same record."))
     
