@@ -1,0 +1,4 @@
+Data from the bioRxiv corona-RSS feed as csv. Includes many medRxiv records. Structure: 
+columns=["title", "abstract", "authors","link","ID","publication_date","update_date", "subject", "is_medRxiv"]
+
+"subject" is empty.
