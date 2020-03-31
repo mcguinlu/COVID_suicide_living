@@ -1,0 +1,10 @@
+#Suicide seach
+([Ss]elf[- ]?[Ii]njur(y|ious)[- ]?[Bb]ehaviou?r)|([Ss]elf[- ]?([Mm]utilat|[Ii]mmolat)(ion|ed))|([Aa]uto[- ]?[Mm]utilat(ion|ed))|(([Ss]uicidal|[Ss]elf[- ]?[Dd]estructive)[- ]?[Bb]ehaviou?r)
+
+(([Aa]ttempted )?[Ss]uicide)|([Ss]uicidal[- ]?[Ii]deation)
+
+([Ss]elf[- ]?([Hh]arm|[Ii]njur|[Mm]utilat)|([Pp]ara[ -]?)?[Ss]uicid)
+
+([Dd]rug[ -]?[Oo]verdose)|([Ss]elf[- ]?[Pp]oison(ing|ed))
+
+([Ss]elf[- ]?([iI]mmolat|[iI]nflict))|([Cc]utt)|([Hh]ead[- ]?[Bb]ang)|([Oo]verdos)
