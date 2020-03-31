@@ -8,3 +8,11 @@
 ([Dd]rug[ -]?[Oo]verdose)|([Ss]elf[- ]?[Pp]oison(ing|ed))
 
 ([Ss]elf[- ]?([iI]mmolat|[iI]nflict))|([Cc]utt)|([Hh]ead[- ]?[Bb]ang)|([Oo]verdos)
+
+###covid search
+([Cc][Oo][Vv][Ii][Dd][ -]?19)|([Cc]orona[ -]?[Vv]irus)
+
+(2019[ -]?[nN][ -]?[Cc][oo][Vv])|([Nn]ovel [cC]orona)
+
+#previous coronaviruses
+(([Ss][Aa]|[Mm][Ee])[Rr][Ss][ -]?[Cc][oo][Vv])|([Ss]evere[ -]?[Aa]cute[ -]?[Rr]espiratory[ -]?[Ss]yndrome)|([Mm]iddle[ -]?[eE]ast(ern)?[ -]?[Rr]espiratory[ -]?[Ss]yndrome)
