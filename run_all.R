@@ -10,10 +10,13 @@
 # Define queries ----------------------------------------------------------
 ###########################################################################
 
-# Define query 
-topic1 <- c("suicide","depress", "mental health")
+# Define regex query
+suicide_query <- paste0(readLines("data/search_regexes_single_suicide.txt"), collapse = "|")
+regex_query <- list(suicide_query)
 
-query <- list(topic1)
+#Define PubMed query
+pudmed_query <- readLines("data/search_regexes_pubmed.txt")
+
 
 ###########################################################################
 # External scripts --------------------------------------------------------
@@ -50,17 +53,22 @@ reticulate::py_run_file("data/retrieve_rss.py")
 # Perform searches --------------------------------------------------------
 ###########################################################################
 
-# bioRxiv/medRxiv searches  
+#-#-#-#
+# bioRxiv/medRxiv searches
+#-#-#-#
+
 rx_data <- read.csv("data/bioRxiv_rss.csv", stringsAsFactors = FALSE, 
                  encoding = "UTF-8", header = TRUE)
 
 colnames(rx_data)[7] <- "date"
 
-rx_results <- perform_search(query, rx_data, fields = c("title","abstract"))
+rx_results <- perform_search(regex_query, rx_data, fields = c("title","abstract"))
 
 rx_results$source <- gsub("True","medRxiv", gsub("False","bioRxiv",rx_results$is_medRxiv))
 
-rx_clean_results <- data.frame(title       = rx_results$title,   
+# Clean results
+rx_clean_results <- data.frame(stringsAsFactors = FALSE,
+                               title       = rx_results$title,   
                                 abstract    = rx_results$abstract,      
                                 authors     = rx_results$authors,     
                                 link        = rx_results$link,  
@@ -68,7 +76,9 @@ rx_clean_results <- data.frame(title       = rx_results$title,
                                 subject     = rx_results$subject,     
                                 source      = rx_results$source)
 
+#-#-#-#
 # WHO searches
+#-#-#-#
 
 who_data <- read.csv("data/WHO_database.csv",
                              encoding = "UTF-8",
@@ -80,11 +90,13 @@ colnames(who_data)[4] <- "date"
 colnames(who_data)[11] <- "link"
 colnames(who_data)[16] <- "subject"
 
-who_results <- perform_search(query, who_data, fields = c("title","abstract", "subject"))
+who_results <- perform_search(regex_query, who_data, fields = c("title","abstract"))
 
 who_results$subject <- gsub("\\*","",who_results$subject)
 
-who_clean_results <- data.frame(title       = who_results$title,   
+# Clean results
+who_clean_results <- data.frame(stringsAsFactors = FALSE, 
+                                title       = who_results$title,   
                                 abstract    = who_results$abstract,      
                                 authors     = who_results$authors,     
                                 link        = who_results$link,  
@@ -93,9 +105,9 @@ who_clean_results <- data.frame(title       = who_results$title,
                                 source      = rep("WHO",length(who_results$title))       
 )
 
+#-#-#-#
 # PubMed
-
-pudmed_query <- "(suicide OR mental health) AND coronavirus"
+#-#-#-#
 
 abstracts_xml <- fetch_pubmed_data(pubmed_id_list = get_pubmed_ids(pudmed_query))
 
@@ -115,7 +127,9 @@ for (article in 2:length(test)) {
 # Generate date variable
 pubmed_results$date <- paste0(pubmed_results$year,pubmed_results$month,pubmed_results$day)
 
-pubmed_clean_results <- data.frame(title    = pubmed_results$title,   
+# Clean results
+pubmed_clean_results <- data.frame(stringsAsFactors = FALSE,
+                                   title    = pubmed_results$title,   
                                 abstract    = pubmed_results$abstract,      
                                 authors     = pubmed_results$authors,     
                                 link        = pubmed_results$doi,  
