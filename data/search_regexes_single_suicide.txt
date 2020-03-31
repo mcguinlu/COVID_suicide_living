@@ -1,0 +1,19 @@
+[Ss]elf[- ]?[Ii]njur(y|ious)[- ]?[Bb]ehaviou?r
+[Ss]elf[- ]?([Mm]utilat¬[Ii]mmolat)(ion|ed)
+[Aa]uto[- ]?[Mm]utilat(ion|ed)
+[Ss]uicidal[- ]?[Bb]ehaviou?r
+[Ss]elf[- ]?[Dd]estructive)[- ]?[Bb]ehaviou?r
+[Ss]uicide
+[Aa]ttempted[- ]?[Ss]uicide
+[Ss]uicidal[- ]?[Ii]deation
+[Ss]elf[- ]?[Hh]arm
+[Ss]elf[- ]?[Mm]utilat
+[Ss]elf[- ]?[Ii]njur
+[Pp]ara[ -]?[Ss]uicid
+[Dd]rug[ -]?[Oo]verdose
+[Ss]elf[- ]?[Pp]oison(ing|ed)
+[Ss]elf[- ]?[iI]nflict
+[Ss]elf[- ]?[iI]mmolat
+[Cc]utt
+[Hh]ead[- ]?[Bb]ang
+[Oo]verdos
