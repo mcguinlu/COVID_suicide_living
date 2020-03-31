@@ -1,6 +1,7 @@
-#' Search medRxiv
+#' Search database
 #' @description Search medRxiv using a string
 #' @param query Character string, vector or list
+#' @param data Pass in database to search
 #' @param fields Fields of the database to search - default is Title, Abstract,
 #'   First author, Subject, and Link (which includes the DOI)
 #' @param from.date Defines earlist date of interest. Written as a number in
@@ -28,7 +29,7 @@ perform_search <- function(query,
                       from.date = NULL,
                       to.date = NULL,
                       NOT = "",
-                      deduplicate = TRUE # Change to true at some point
+                      deduplicate = FALSE 
 ){
   
   . <- NULL
