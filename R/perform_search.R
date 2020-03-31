@@ -48,6 +48,7 @@ perform_search <- function(query,
 
   # Load data
   mx_data <- data
+  mx_data$internal_id <- seq(1,length(mx_data$title))
   
   # Implement data limits ---------------------------------------------------
   
@@ -79,8 +80,8 @@ perform_search <- function(query,
         dplyr::filter_at(dplyr::vars(fields),
                          dplyr::any_vars(grepl(paste(query[[list]],
                                                      collapse = '|'), .))) %>%
-        dplyr::select(link)
-      tmp <- tmp$link
+        dplyr::select(internal_id)
+      tmp <- tmp$internal_id
       and_list[[list]] <- tmp
     }
     
@@ -95,9 +96,9 @@ perform_search <- function(query,
       dplyr::filter_at(dplyr::vars(fields),
                        dplyr::any_vars(grepl(paste(query,
                                                    collapse = '|'), .))) %>%
-      dplyr::select(link)
+      dplyr::select(internal_id)
     
-    and <- tmp$link
+    and <- tmp$internal_id
     
   }
   
@@ -108,11 +109,11 @@ perform_search <- function(query,
       dplyr::filter_at(dplyr::vars(fields),
                        dplyr::any_vars(grepl(paste(NOT,
                                                    collapse = '|'), .))) %>%
-      dplyr::select(link)
+      dplyr::select(internal_id)
     
     `%notin%` <- Negate(`%in%`)
     
-    and <- and[and %notin% tmp$link]
+    and <- and[and %notin% tmp$internal_id]
     
     results <- and
     
@@ -122,12 +123,12 @@ perform_search <- function(query,
   
   
   if(length(query) > 1){
-    mx_results <- mx_data[which(mx_data$link %in% results),]
+    mx_results <- mx_data[which(mx_data$internal_id %in% results),]
   } else {
     if(query == "*") {
       mx_results <- mx_data
     } else {
-      mx_results <- mx_data[which(mx_data$link %in% results),]
+      mx_results <- mx_data[which(mx_data$internal_id %in% results),]
     }
   }
   
@@ -161,6 +162,8 @@ perform_search <- function(query,
                    length(mx_results$link),
                    " record(s) matching your search.\n",
                    "Note, there may be >1 version of the same record."))
+    
+    mx_results <- mx_results[,1:ncol(mx_results)-1]
     
     mx_results
     
