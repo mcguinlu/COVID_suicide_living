@@ -8,3 +8,14 @@
 ([Dd]rug[ -]?[Oo]verdose)|([Ss]elf[- ]?[Pp]oison(ing|ed))
 
 ([Ss]elf[- ]?([iI]mmolat|[iI]nflict))|([Cc]utt)|([Hh]ead[- ]?[Bb]ang)|([Oo]verdos)
+
+###covid search
+([Cc][Oo][Vv][Ii][Dd][ -]?19)|([Cc]orona[ -]?[Vv]irus)
+
+(2019[ -]?[nN][ -]?[Cc][oo][Vv])|([Nn]ovel [cC]orona)
+
+#previous coronaviruses
+(([Ss][Aa]|[Mm][Ee])[Rr][Ss][ -]?[Cc][oo][Vv])|([Ss]evere[ -]?[Aa]cute[ -]?[Rr]espiratory[ -]?[Ss]yndrome)|([Mm]iddle[ -]?[eE]ast(ern)?[ -]?[Rr]espiratory[ -]?[Ss]yndrome)
+
+#PubMed search:
+Search ((selfharm*[TIAB] OR self-harm*[TIAB] OR selfinjur*[TIAB] OR self-injur*[TIAB] OR selfmutilat*[TIAB] OR self-mutilat*[TIAB] OR suicid*[TIAB] OR parasuicid*[TIAB) OR (suicide[TIAB] OR suicidal ideation[TIAB] OR attempted suicide[TIAB]) OR (drug overdose[TIAB] OR self?poisoning[TIAB]) OR (self-injurious behavio?r[TIAB] OR self?mutilation[TIAB] OR automutilation[TIAB] OR suicidal behavio?r[TIAB] OR self?destructive behavio?r[TIAB] OR self?immolation[TIAB])) OR (cutt*[TIAB] OR head?bang[TIAB] OR overdose[TIAB] OR self?immolat*[TIAB] OR self?inflict*[TIAB]))) AND ((coronavirus disease?19[TIAB] OR sars?cov?2[TIAB] OR mers?cov[TIAB]) OR (19?ncov[TIAB] OR 2019?ncov[TIAB] OR n?cov[TIAB]) OR ("severe acute respiratory syndrome coronavirus 2" [Supplementary Concept] OR "COVID-19" [Supplementary Concept] OR COVID-19 [tw] OR coronavirus [tw]))
