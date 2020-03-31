@@ -6,6 +6,14 @@
 # Author: 
 # Description: 
 
+###########################################################################
+# Define queries ----------------------------------------------------------
+###########################################################################
+
+# Define query 
+topic1 <- c("suicide","depress", "mental health")
+
+query <- list(topic1)
 
 ###########################################################################
 # External scripts --------------------------------------------------------
@@ -31,22 +39,16 @@ GITHUB_PASS <- readLines("GITHUB_PASS.txt")
 # Define custom function
 `%notin%` <- Negate(`%in%`)
 
-
 ###########################################################################
 # Update underlying data sets ---------------------------------------------
 ###########################################################################
 
+# Update bioRxiv/medRxiv dataset
 reticulate::py_run_file("data/retrieve_rss.py")
 
 ###########################################################################
 # Perform searches --------------------------------------------------------
 ###########################################################################
-
-# Define query 
-topic1 <- c("suicide","depress", "mental health")
-
-query <- list(topic1)
-
 
 # bioRxiv/medRxiv searches  
 data <- read.csv("data/bioRxiv_rss.csv", stringsAsFactors = FALSE, 
@@ -55,6 +57,11 @@ data <- read.csv("data/bioRxiv_rss.csv", stringsAsFactors = FALSE,
 colnames(data)[7] <- "date"
 
 rx_results <- perform_search(query, data, from.date = 20200101, fields = c("title","abstract"), deduplicate = FALSE)
+
+# WHO searches
+
+
+
 
 
 
@@ -67,8 +74,7 @@ previous_results <- read.csv("data/results/all_results.csv",
                              stringsAsFactors = FALSE,
                              header = TRUE)
 
-new_results <- all_results[which(all_results$title %notin% previous_results$title), ]
-
+new_results <- rx_results[which(rx_results$title %notin% previous_results$title), ]
 
 ###########################################################################
 # Export results --------------------------------------------------------
@@ -82,7 +88,7 @@ writeLines(current_time, "data/results/timestamp.txt")
 file_name_all <- "data/results/all_results.csv"
 file_name_daily <- paste0("data/results/",current_date,"_results.csv")
 
-write.csv(all_results,
+write.csv(rx_results,
           file = file_name_all,
           fileEncoding = "UTF-8",
           row.names = FALSE)
@@ -108,7 +114,10 @@ write.csv(file_name_list,
 
 # Add and commit files
 add(repo = getwd(),
-    path = file_name)
+    path = file_name_all)
+
+add(repo = getwd(),
+    path = file_name_daily)
 
 add(repo = getwd(),
     path = "data/results/results_list.csv")
