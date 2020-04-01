@@ -31,3 +31,6 @@
 [Cc]ognitive[- ]?[Rr]igidity
 [Ss]uicidality
 [Ss]uicide[- ]?[Ii]deation
+[Mm]ental[ -]?[Hh]ealth[ -]?([Cc]ris[ei]s|emergenc)
+([pP]sychiatric|[Pp]sychotic|[Ss]chizophren\w*|[Bb]ipolar|[Mm]ental\w* ([Ii]ll\w*|[Dd]isorder))[ -]?([Cc]ris[ie]s|[Ee]mergenc|[Aa]cute)
+([Cc]ris[ie]s|[Ee]mergenc\w*|[Aa]cute)[ -]?([pP]sychiatric|[Pp]sychotic|[Ss]chizophren\w*|[Bb]ipolar|[Mm]ental\w* ([Ii]ll\w*|[Dd]isorder))
