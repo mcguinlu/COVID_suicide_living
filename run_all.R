@@ -102,8 +102,7 @@ who_clean_results <- data.frame(stringsAsFactors = FALSE,
                                 link        = who_results$link,  
                                 date        = who_results$date,  
                                 subject     = who_results$subject,     
-                                source      = rep("WHO",length(who_results$title))       
-)
+                                source      = rep("WHO",length(who_results$title)))
 
 #-#-#-#
 # PubMed
@@ -130,19 +129,23 @@ pubmed_results$date <- paste0(pubmed_results$year,pubmed_results$month,pubmed_re
 # Clean results
 pubmed_clean_results <- data.frame(stringsAsFactors = FALSE,
                                    title    = pubmed_results$title,   
-                                abstract    = pubmed_results$abstract,      
-                                authors     = pubmed_results$authors,     
-                                link        = pubmed_results$doi,  
-                                date        = pubmed_results$date,  
-                                subject     = pubmed_results$keywords,     
-                                source      = rep("PubMed",length(pubmed_results$title))       
-)
+                                   abstract    = pubmed_results$abstract,      
+                                   authors     = pubmed_results$authors,     
+                                   link        = pubmed_results$doi,  
+                                   date        = pubmed_results$date,  
+                                   subject     = pubmed_results$keywords,     
+                                   source      = rep("PubMed",length(pubmed_results$title)))      
+
 
 
 # Combine all clean search results into final
 all_results <- rbind(rx_clean_results,
                      who_clean_results,
                      pubmed_clean_results)
+
+all_results$decision <- ""
+
+all_results$extraction_date = rep(format(Sys.time(), "%Y-%m-%d"),length(all_results$title))
 
 ###########################################################################
 # Daily updates --------------------------------------------------------
@@ -153,6 +156,27 @@ previous_results <- read.csv("data/results/all_results.csv",
                              header = TRUE)
 
 new_results <- all_results[which(all_results$title %notin% previous_results$title), ]
+
+new_results$decision <- "Undecided"
+
+if (max(previous_results$ID)==-Inf) {
+  new_results$ID <- seq(1:nrow(new_results))
+} else {
+  new_results$ID <- seq(max(previous_results$ID):(max(previous_results$ID)+ nrow(new_results)))
+}
+
+
+# Add new results to database
+
+databaseName <- "COVID-suicide"
+collectionName <- "responses"
+mongo_url <- paste0("mongodb+srv://mcguinlu:",
+                    readLines("app/password.txt"),
+                    "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
+
+db <- mongo(collection = collectionName,url = mongo_url)
+
+db$insert(new_results)
 
 ###########################################################################
 # Export results --------------------------------------------------------
