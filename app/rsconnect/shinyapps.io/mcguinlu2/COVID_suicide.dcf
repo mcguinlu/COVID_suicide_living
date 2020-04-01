@@ -5,9 +5,9 @@ account: mcguinlu2
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2020921
-bundleId: 2953852
+bundleId: 2954692
 url: https://mcguinlu2.shinyapps.io/COVID_suicide/
-when: 1585747519.2391
+when: 1585758738.74349
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: all_results.csv
