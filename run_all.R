@@ -192,83 +192,101 @@ previous_results <- read.csv("data/results/all_results.csv",
 
 new_results <- all_results[which(all_results$title %notin% previous_results$title), ]
 
-new_results$initial_decision <- "Undecided"
-new_results$expert_decision <- ""
-
-if (max(previous_results$ID)==-Inf) {
-  new_results$ID <- seq(1:nrow(new_results))
-} else {
-  new_results$ID <- seq(max(previous_results$ID):(max(previous_results$ID)+ nrow(new_results)))
+if (nrow(new_results)!=0) {
+    new_results$initial_decision <- "Undecided"
+    new_results$expert_decision <- ""
+    
+    
+    if (max(previous_results$ID)==-Inf) {
+      new_results$ID <- seq(1:nrow(new_results))
+    } else {
+      new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
+    }
 }
-
-
-
-
-# Add new results to database
-databaseName <- "COVID-suicide"
-collectionName <- "responses"
-mongo_url <- paste0("mongodb+srv://mcguinlu:",
-                    readLines("app/password.txt"),
-                    "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
-
-db <- mongo(collection = collectionName,url = mongo_url)
-
-db$insert(new_results)
 
 ###########################################################################
 # Export results --------------------------------------------------------
 ###########################################################################
 
-current_time <- format(Sys.time(), "%Y-%m-%d %H:%M")
-current_date <- format(Sys.time(), "%Y-%m-%d")
+#Set-up
+  current_time <- format(Sys.time(), "%Y-%m-%d %H:%M")
+  current_date <- format(Sys.time(), "%Y-%m-%d")
+  
+  writeLines(current_time, "data/results/timestamp.txt")
+  
+  file_name_all <- "data/results/all_results.csv"
+  file_name_daily <- paste0("data/results/",current_date,"_results.csv")
+  db_snapshot_name <- paste0("data/screening_snapshot/",current_date,"_snapshot.csv")
 
-writeLines(current_time, "data/results/timestamp.txt")
 
-file_name_all <- "data/results/all_results.csv"
-file_name_daily <- paste0("data/results/",current_date,"_results.csv")
+# Take and save snapshot of the database, and add new results
+  databaseName <- "COVID-suicide"
+  collectionName <- "responses"
+  mongo_url <- paste0("mongodb+srv://mcguinlu:",
+                      readLines("app/password.txt"),
+                      "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
+  
+  db <- mongo(collection = collectionName,url = mongo_url)
+  
+  db_snapshot <- db$find()
+  
+  write.csv(db_snapshot,
+            file = db_snapshot_name,
+            fileEncoding = "UTF-8",
+            row.names = FALSE)
+  
+  db$insert(new_results)
 
-write.csv(all_results,
-          file = file_name_all,
-          fileEncoding = "UTF-8",
-          row.names = FALSE)
 
-write.csv(new_results,
-          file = file_name_daily,
-          fileEncoding = "UTF-8",
-          row.names = FALSE)
+# Save other CSV files
+  write.csv(all_results,
+            file = file_name_all,
+            fileEncoding = "UTF-8",
+            row.names = FALSE)
+  
+  write.csv(new_results,
+            file = file_name_daily,
+            fileEncoding = "UTF-8",
+            row.names = FALSE)
+
 
 # Add new file name to list
-file_name_list <- read.csv("data/results/results_list.csv", 
-                           stringsAsFactors = FALSE)
+  file_name_list <- read.csv("data/results/results_list.csv", 
+                             stringsAsFactors = FALSE)
+  
+  file_name_df <- data.frame(file_name = paste0(current_date,"results.csv"),
+                             stringsAsFactors = FALSE )
+  file_name_list <- rbind(file_name_list, file_name_df)
+  file_name_list <- unique(file_name_list)
+  
+  write.csv(file_name_list,
+            file = "data/results/results_list.csv",
+            fileEncoding = "UTF-8",
+            row.names = FALSE)
 
-file_name_df <- data.frame(file_name = paste0(current_date,"results.csv"),
-                           stringsAsFactors = FALSE )
-file_name_list <- rbind(file_name_list, file_name_df)
-file_name_list <- unique(file_name_list)
-
-write.csv(file_name_list,
-          file = "data/results/results_list.csv",
-          fileEncoding = "UTF-8",
-          row.names = FALSE)
-
+  
 # Add and commit files
-add(repo = getwd(),
-    path = file_name_all)
+  add(repo = getwd(),
+      path = file_name_all)
+  
+  add(repo = getwd(),
+      path = file_name_daily)
+  
+  add(repo = getwd(),
+      path = db_snapshot_name)
+  
+  add(repo = getwd(),
+      path = "data/results/results_list.csv")
+  
+  add(repo = getwd(),
+      path = "data/timestamp.txt")
+  
+  commit(repo = getwd(),
+         message = paste0("Updated search results: ", current_time)
+  )
 
-add(repo = getwd(),
-    path = file_name_daily)
-
-add(repo = getwd(),
-    path = "data/results/results_list.csv")
-
-add(repo = getwd(),
-    path = "data/timestamp.txt")
-
-commit(repo = getwd(),
-       message = paste0("Updated search results: ", current_time)
-)
-
+  
 # Push the repo again
-push(object = getwd(),
-     credentials = cred_user_pass(username = GITHUB_USER,
-                                  password = GITHUB_PASS))
+  push(object = getwd(),
+       credentials = cred_user_pass(username = GITHUB_USER,
+                                    password = GITHUB_PASS))
