@@ -52,7 +52,28 @@ reticulate::py_run_file("data/retrieve_rss.py")
 ###########################################################################
 # Perform searches --------------------------------------------------------
 ###########################################################################
+#############
+##Data from Kaggle dataset, including microsoft Academic indexed Elsevier, PMC and Chan Zuckerberg Initiative records. Updated once a week, #TODO auto-update
+misc_data <- read.csv("data/MA_elsevier_database.csv", stringsAsFactors = FALSE, encoding = "UTF-8", header = TRUE)
 
+colnames(misc_data)[7] <- "date"
+
+misc_results <- perform_search(regex_query, misc_data, fields = c("title","abstract"))
+
+misc_results$subject <- gsub("\\*","",who_results$subject)
+
+# Clean results
+misc_clean_results <- data.frame(stringsAsFactors = FALSE, 
+                                title       = misc_results$title,   
+                                abstract    = misc_results$abstract,      
+                                authors     = misc_results$authors,     
+                                link        = misc_results$link,  
+                                date        = misc_results$date,  
+                                subject     = misc_results$subject,     
+                                source      = misc_results$Source      
+)
+
+#############
 #-#-#-#
 # bioRxiv/medRxiv searches
 #-#-#-#
