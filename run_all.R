@@ -56,11 +56,13 @@ reticulate::py_run_file("data/retrieve_rss.py")
 ##Data from Kaggle dataset, including microsoft Academic indexed Elsevier, PMC and Chan Zuckerberg Initiative records. Updated once a week, #TODO auto-update
 misc_data <- read.csv("data/MA_elsevier_database.csv", stringsAsFactors = FALSE, encoding = "UTF-8", header = TRUE)
 
-colnames(misc_data)[7] <- "date"
+misc_data$date <- character(length = nrow(misc_data))
+
+for (row in 1:nrow(misc_data)) {
+  misc_data$date[row] <- paste0(rev(unlist(stringr::str_split(misc_data$publication_date[row], "/"))),collapse = "")
+}
 
 misc_results <- perform_search(regex_query, misc_data, fields = c("title","abstract"))
-
-misc_results$subject <- gsub("\\*","",who_results$subject)
 
 # Clean results
 misc_clean_results <- data.frame(stringsAsFactors = FALSE, 
@@ -133,21 +135,17 @@ abstracts_xml <- fetch_pubmed_data(pubmed_id_list = get_pubmed_ids(pudmed_query)
 
 test <- articles_to_list(abstracts_xml)
 
-# Create basic dataframe
 pubmed_results <- article_to_df(test[1], getAuthors = FALSE, getKeywords = TRUE)
 pubmed_results$authors <- paste0(custom_grep(test[1],"LastName","char"),collapse = ", ")
 
-# Iterate through results
 for (article in 2:length(test)) {
   tmp <- article_to_df(test[article], getAuthors = FALSE, getKeywords = TRUE)
   tmp$authors <- paste0(custom_grep(test[article],"LastName","char"),collapse = ", ")
   pubmed_results<- rbind(pubmed_results,tmp)
 }
 
-# Generate date variable
 pubmed_results$date <- paste0(pubmed_results$year,pubmed_results$month,pubmed_results$day)
 
-# Clean results
 pubmed_clean_results <- data.frame(stringsAsFactors = FALSE,
                                    title    = pubmed_results$title,   
                                    abstract    = pubmed_results$abstract,      
@@ -162,9 +160,25 @@ pubmed_clean_results <- data.frame(stringsAsFactors = FALSE,
 # Combine all clean search results into final
 all_results <- rbind(rx_clean_results,
                      who_clean_results,
-                     pubmed_clean_results)
+                     pubmed_clean_results, 
+                     misc_clean_results)
 
-all_results$decision <- ""
+all_results$initial_decision <- ""
+
+for (row in 1:nrow(all_results)) {
+  if (stringr::str_sub(all_results$link[row],1,2)=="10") {
+    all_results$link[row] <- paste0("https://doi.org/",all_results$link[row])
+  }
+  
+  if (all_results$link[row] == "") {
+    # Convert title to google search query if no link exists
+    all_results$link[row] <- paste0("https://www.google.com/search?q=",paste0(unlist(stringr::str_split(all_results$title[row]," ")), collapse = "+"))
+  }
+}
+
+for (col in 1:11) {
+  all_results[[paste0("q",col)]] <- character(length = nrow(all_results))
+}
 
 all_results$extraction_date = rep(format(Sys.time(), "%Y-%m-%d"),length(all_results$title))
 
@@ -178,7 +192,8 @@ previous_results <- read.csv("data/results/all_results.csv",
 
 new_results <- all_results[which(all_results$title %notin% previous_results$title), ]
 
-new_results$decision <- "Undecided"
+new_results$initial_decision <- "Undecided"
+new_results$expert_decision <- ""
 
 if (max(previous_results$ID)==-Inf) {
   new_results$ID <- seq(1:nrow(new_results))
@@ -187,8 +202,9 @@ if (max(previous_results$ID)==-Inf) {
 }
 
 
-# Add new results to database
 
+
+# Add new results to database
 databaseName <- "COVID-suicide"
 collectionName <- "responses"
 mongo_url <- paste0("mongodb+srv://mcguinlu:",
