@@ -20,7 +20,7 @@
 [Hh]opelessness
 [Pp]owerlessness
 [Hh]elplessness
-[Nn]egative[- ]?[Aa]ttitude$
+[Nn]egative[- ]?[Aa]ttitude
 [Ee]motional[- ]?[Nn]egativism
 [Pp]essimism
 [Dd]epress
