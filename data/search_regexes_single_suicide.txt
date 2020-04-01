@@ -17,3 +17,17 @@
 [Cc]utt
 [Hh]ead[- ]?[Bb]ang
 [Oo]verdos
+[Hh]opelessness
+[Pp]owerlessness
+[Hh]elplessness
+[Nn]egative[- ]?[Aa]ttitude$
+[Ee]motional[- ]?[Nn]egativism
+[Pp]essimism
+[Dd]epress
+[Pp]assivity
+[Ss]ad[- ]?[Aa]ffect
+[Ss]adness
+[Dd]ecreased[- ]?[Aa]ffect
+[Cc]ognitive[- ]?[Rr]igidity
+[Ss]uicidality
+[Ss]uicide[- ]?[Ii]deation
