@@ -176,9 +176,11 @@ for (row in 1:nrow(all_results)) {
   }
 }
 
-for (col in 1:11) {
+for (col in 0:12) {
   all_results[[paste0("q",col)]] <- character(length = nrow(all_results))
 }
+
+all_results$q12 <- "FALSE"
 
 all_results$extraction_date = rep(format(Sys.time(), "%Y-%m-%d"),length(all_results$title))
 
@@ -203,6 +205,17 @@ if (nrow(new_results)!=0) {
       new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
     }
 }
+
+new_results$o1 <- character(length = nrow(new_results))
+
+all_results <- rbind(previous_results,
+                     new_results)
+
+all_results <- all_results %>% 
+  mutate_all(~ replace_na(.x, "")) %>%
+  as.data.frame()
+
+all_results$ID <- as.numeric(all_results$ID)
 
 ###########################################################################
 # Export results --------------------------------------------------------
