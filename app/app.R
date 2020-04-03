@@ -13,6 +13,8 @@ library(mongolite)
 library(waiter)
 library(DT)
 library(markdown)
+library(shinyjs)
+library(stringr)
 
 textAreaInput2 <- function (inputId, label, value = "", width = NULL, height = NULL, 
                             cols = NULL, rows = NULL, placeholder = NULL, resize = NULL) 
@@ -63,39 +65,64 @@ ui <- tagList(
              
              waiter::waiter_show_on_load()),
   
-    tabPanel(title = "Initial decision",
-             h3("Initial decisions"),
+    tabPanel(title = "Initial assessment",
+             h3(strong("Initial decisions")),
              p("Please use the \"Include\"/\"Exclude\" buttons to make an inital decision on each record.",
              "Records marked as \"Include\" will be passed to the \"Expert decision\" tab for further screening and data extraction.",
              "Once you make a decision, the program will automatically move to the next abstract - if you make a mistake, unclick the \"Show only IDs needing a decision\" checkbox and navigate to the record you wish to correct using the drop-down box.",
              "Clicking on the link in the \"Link\" column will open up the record in a new tab via it's DOI, or if no DOI was available, will perform a Google search of the record's title."),
-             textOutput("number_initial_undecide"),
+             h4(strong(textOutput("number_initial_undecide"))),
              uiOutput("initalID"),
-             checkboxInput("showall", "Show only IDs needing an initial decision", value = TRUE),
-             actionButton("initalinclude", "Include"),
-             actionButton("initalexclude", "Exclude"),
-             tableOutput("test")
+             checkboxInput("showall", "Show only IDs needing an initial assessment", value = TRUE),
+             actionButton("initalinclude", "Send for further assessment"),
+             actionButton("initalexclude", "Discard"),
+             br(),
+             tableOutput("test"),
+ 
              ),
     
-    tabPanel(title = "Expert decision",
-             h3("Expert decisions"),
-             textOutput("number_initial_include"),
-             div(style="display: inline-block;vertical-align:top; width: 150px;",uiOutput("expertID")),
-             div(style="display: inline-block;vertical-align:top; width: 100px;",HTML("<br>")),
-             div(style="display: inline-block;vertical-align:top; width: 150px;",uiOutput("expert_decision")),
+    tabPanel(title = "Expert assessment",
+             value = "expert_decision_pane",
+             h3(strong("Expert assessment")),
+             h4(strong(textOutput("number_expert_undecide"))),
+             uiOutput("expertID"),
+             checkboxInput("showallexpert", "Show only records that have not been marked as \"Complete\"", value = FALSE),
+             fluidRow(column(width = 6,
+             actionButton("expertinclude", "Include"),
+             actionButton("expertexclude", "Exclude")),
+             column(width = 6, align = "right",downloadButton("report", "Generate PDF report for this record")
+)),
+             br(),
              tableOutput("expert_table"),
+             hidden(div(id = "form",
              fluidRow(
-               column(width = 3,
-                      uiOutput("basic_header"),
-                      lapply(1:3, function(i) uiOutput(paste0("q",i)))),
+               column(
+                 width = 3,
+                 uiOutput("basic_header"),
+                 lapply(c(12,0:3), function(i)
+                   uiOutput(paste0("q", i)))
+               ),
                column(width = 8,
                       fluidRow(uiOutput("adv_header")),
-              fluidRow(column(width = 6,
-                      lapply(4:7, function(i) uiOutput(paste0("q",i)))),
-               column(width = 6,
-                      lapply(8:11, function(i) uiOutput(paste0("q",i)))))),
+                      fluidRow(
+                        column(width = 6,
+                               lapply(c(4,6,5), function(i)
+                                 uiOutput(paste0(
+                                   "q", i
+                                 ))),
+                               uiOutput("o1"),
+                               uiOutput("q7")
+                               ),
+                        column(width = 6,
+                               lapply(8:11, function(i)
+                                 uiOutput(paste0(
+                                   "q", i
+                                 ))))
+                      ), 
                
-             )),
+             ))
+             ))
+    ),
     
     
     tabPanel(title = "About and Preferences",
@@ -114,7 +141,22 @@ ui <- tagList(
              )
     
     ),
-use_waiter())
+    tags$head(
+      tags$style(
+        HTML(".shiny-notification {
+             position:fixed;
+             top: calc(5%);
+             width:25%;
+             height: 7%;
+             left: calc(75%);
+             }
+             "
+        )
+      )
+    ),    
+use_waiter(),
+useShinyjs()
+)
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -123,100 +165,202 @@ server <- function(input, output) {
 
 # Initial initial_decision --------------------------------------------------------
 
-    output$number_initial_undecide <- renderText({
-        initaldecision()
-        paste0("There were ", db$count('{}'), " records found by the search, of which ", db$count('{"initial_decision": "Undecided"}')," record(s) need an initial decision")
-    })
+  # Render text to show at top
+  # Details the number found by search and the number needing inital screening
+  output$number_initial_undecide <- renderText({
+    initaldecision()
+    paste0(
+      "There were ",
+      db$count('{}'),
+      " records found by the search, of which ",
+      db$count('{"initial_decision": "Undecided"}'),
+      " record(s) need an initial decision"
+    )
+  })
     
-    output$test <- renderTable({
-        initaldecision()
-        if (input$showall == FALSE) {
-          find <- '{}'
-        } else {
-          find <- '{"initial_decision": "Undecided"}'
-        }
-      
-        if(nrow(db$find(find, fields = '{"_id": false,"ID": true}')) != 0){
-        data <- db$find(query = sprintf('{"ID" : %s}',as.numeric(input$ID)), fields ='{"_id": false,"title": true, "abstract": true, "link": true, "initial_decision": true}' )
-        data$link <- ifelse(data$link!="",paste0("<a href='", data$link, "' target='_blank'>Link</a>"),"")
-        data
-        }
-      
-            }, sanitize.text.function = function(x) x
-        )
+  # Render ID dropdown box
+  output$initalID <- renderUI({
+    # Take dependency on inital decision
+    initaldecision()
     
-    output$initalID <- renderUI({
-        initaldecision()
-        if (input$showall == FALSE) {
-            find <- '{}'
-        } else {
-            find <- '{"initial_decision": "Undecided"}'
-        }
-        tagList(
-            selectInput("ID","ID", choices = db$find(find, fields = '{"_id": false,"ID": true}'))
-        )
-    })
+    # If showall, find all records, and don't autoprogress when screening
+    if (input$showall == FALSE) {
+      find <- '{}'
+      selected <- isolate(input$ID)
+    } else {
+      find <- '{"initial_decision": "Undecided"}'
+      selected <- ""
+    }
     
-    initaldecision <- reactive({
-        input$initalinclude
-        input$initalexclude
-    })
+    tagList(selectInput(
+      "ID",
+      "ID",
+      choices = db$find(find, fields = '{"_id": false,"ID": true}'), 
+      selected = selected
+    ))
+    
+  })
+  
+  
+  # Render table showing selected record
+  output$test <- renderTable({
+    initaldecision()
+    req(input$ID)
+    
+    # If showall is TRUE, define search to only find records without an inital
+    # decision
+    # If FALSE, find all
+    if (input$showall == FALSE) {
+      find <- '{}'
+    } else {
+      find <- '{"initial_decision": "Undecided"}'
+    }
+    
+    # If no of records found using search is 0, show nothing
+    if (nrow(db$find(find, fields = '{"_id": false,"ID": true}')) != 0) {
+      data <-
+        db$find(query = sprintf('{"ID" : %s}', as.numeric(input$ID)),
+                fields = '{"_id": false,"ID":true,"title": true, "abstract": true, "link": true, "initial_decision": true, "expert_decision": true}')
+      # Format hyperlink correctly
+      data$link <-
+        ifelse(data$link != "",
+               paste0("<a href='", data$link, "' target='_blank'>Link</a>"),
+               "")
+      data$ID <- as.character(data$ID)
+      data[, c(6, 1:5)]
+    }
+    
+  }, sanitize.text.function = function(x)
+    x)
+    
+  # Create reactive value that captures a decision  
+  initaldecision <- reactive({
+    input$initalinclude
+    input$initalexclude
+  })
 
-    # Make inital decisions
-    observeEvent(input$initalinclude,{
-        db$update(query = sprintf('{"ID" : %s}',as.numeric(input$ID)), update = '{"$set":{"initial_decision":"Include"}}')
-    })
-    
-    observeEvent(input$initalexclude,{
-        db$update(query = sprintf('{"ID" : %s}',as.numeric(input$ID)), update = '{"$set":{"initial_decision":"Exclude"}}')
-    })
+  # Make inital "Include" decision and show notification
+  observeEvent(input$initalinclude, {
+    db$update(query = sprintf('{"ID" : %s}', as.numeric(input$ID)),
+              update = '{"$set":{"initial_decision":"Include"}}')
+    showNotification(h4(paste0(
+      "Set ID ",
+      as.numeric(input$ID),
+      " to Initial: ",
+      db$find(sprintf('{"ID" : %s}', as.numeric(input$ID)), fields = '{"_id": false,"initial_decision": true}')
+    )), type = "message", duration = 60)
+  })
+  
+  # Make inital "Exclude" decision and show notification
+  observeEvent(input$initalexclude, {
+    db$update(query = sprintf('{"ID" : %s}', as.numeric(input$ID)),
+              update = '{"$set":{"initial_decision":"Exclude"}}')
+    showNotification(h4(paste0(
+      "Set ID ",
+      as.numeric(input$ID),
+      " to Initial: ",
+      db$find(sprintf('{"ID" : %s}', as.numeric(input$ID)), fields = '{"_id": false,"initial_decision": true}')
+    )), type = "message", duration = 60)
+  })
 
 
 # Expert decision ---------------------------------------------------------
 
-    output$number_initial_include <- renderText({
-      initaldecision()
-      paste0(db$count('{"initial_decision": "Include"}')," record(s) included at title and abstract")
-    })
+  
+  output$number_expert_undecide <- renderText({
+    initaldecision()
+    expertdecision()
+    paste0(
+      "There were ",
+      db$count('{"initial_decision": "Include"}'),
+      " record(s) marked for further assessment, of which ",
+      db$count('{"initial_decision": "Include", "q12": "FALSE"}'),
+      " record(s) need expert assessment and data extraction."
+    )
+  })
     
-    output$expertID <- renderUI({
-      initaldecision()
-      if (nrow(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}')) != 0){
+  output$expertID <- renderUI({
+    input$expertexclude
+    initaldecision()
+    
+    if (input$showallexpert == TRUE) {
+      find <- '{"initial_decision": "Include", "q12": "FALSE"}'
+      selected <- ""
+    } else {
+      find <- '{"initial_decision": "Include"}'
+      selected <- isolate(input$expert_ID)
+    }
+    
+    test <- db$find(find, fields = '{"_id": false, "ID": true, "authors": true}')
+    test$name <- paste0(test$ID," - ", gsub(",","",stringr::word(test$authors, 1)))
+    
+    choices <- setNames(test$ID,test$name                        )
+    
+    test <- input$expert_ID
+    if (nrow(db$find(find, fields = '{"_id": false,"ID": true}')) != 0) {
       tagList(
-        selectInput(inputId = "expert_ID",label = "ID",selected = "",choices = data.frame(db$find('{"initial_decision":"Include"}', fields = '{"_id": false, "ID": true}'))[,1])
+        selectInput(
+          inputId = "expert_ID",
+          label = "ID",
+          selected = selected,
+          choices = choices
+        )
       )
-      }  
-    })
+    }
+  })
+  
+  
+  observe({
+    initaldecision()
+    expertdecision()
+    req(input$expert_ID)
     
-    output$expert_decision <- renderUI({
-      initaldecision()
+    if (input$showallexpert == TRUE) {
+      find <- '{"initial_decision": "Include", "q12": "FALSE"}'
+    } else {
+      find <- '{"initial_decision": "Include"}'
+    }
+    
+    if (nrow(data.frame(db$find(find, fields = '{"_id": false,"ID": true}'))) > 0) {
+      show("form")
+    } else {
+      hide("form")
+    }
+  })
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false, "ID": true}'))) > 0){
-      tagList(
-        selectInput(inputId = "expert_decision",label = "Expert Decision", selected = db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}'), choices = c("", "Include", "Exclude"))
-      )
-      }  
+
+
+    expertdecision <- reactive({
+      input$expertinclude
+      input$expertexclude
     })
     
-    observeEvent(input$expert_decision,{
-      db$update(
-        query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
-        update = sprintf('{"$set":{"expert_decision":"%s"}}', input$expert_decision)
-      )
+    # Make inital decisions
+    observeEvent(input$expertinclude,{
+      db$update(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), update = '{"$set":{"expert_decision":"Include"}}')
     })
+    
+    observeEvent(input$expertexclude,{
+      db$update(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), update = '{"$set":{"expert_decision":"Exclude", "initial_decision":"Exclude" }}')
+    })
+    
     
     output$expert_table <- renderTable({
-      initaldecision()
-      if (input$showall == FALSE) {
-        find <- '{}'
-      } else {
-        find <- '{"initial_decision": "Undecided"}'
-      }
+      expertdecision()
+      req(input$expert_ID)
       
-      if(nrow(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}')) != 0){
-        data <- db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"ID": true,"title": true, "abstract": true, "link": true, "initial_decision": true}' )
+      if (input$showallexpert == TRUE) {
+        find <- '{"initial_decision": "Include", "q12": "FALSE"}'
+      } else {
+        find <- '{}'
+      }
+
+      if(nrow(db$find(find, fields = '{"_id": false,"ID": true}')) != 0){
+        data <- db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"ID": true,"title": true, "abstract": true, "authors": true, "link": true, "initial_decision": true, "expert_decision": true,"q12": true}' )
         data$link <- ifelse(data$link!="",paste0("<a href='", data$link, "' target='_blank'>Link</a>"),"")
-        data[,c(5,1:4)]
+        data$ID <- as.character(data$ID)
+        colnames(data)[6] <- "Complete"
+        data[,c(8,3,1,2,4,5,7,6)]
       }
       
     }, sanitize.text.function = function(x) x
@@ -224,183 +368,221 @@ server <- function(input, output) {
     
     
     output$basic_header <- renderUI({
-      input$expert_decision
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
+      expertdecision()
+      req(input$expert_ID)
+      
           tagList(
           h4("Basic details")
           )
-        }}
     })
     
     output$adv_header <- renderUI({
-      input$expert_decision
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
+      expertdecision()
+      req(input$expert_ID)
+      
           tagList(
             h4("Advanced details")
           )
-        }}
     })
       
     
+    
+    output$q0 <- renderUI({
+      expertdecision()
+      req(input$expert_ID)
+      
+      tagList(
+        selectInput("q0",
+                    "Assessor initals",
+                    # Initials only
+                    choices = sort(c("","AJ","DG","ECE","COO","HE", "SZ","PM","NK","RW","KH")),
+                    selected = db$find(sprintf(
+                      '{"ID" : %s}', input$expert_ID
+                    ),
+                    fields = '{"_id": false,"q0": true}')
+                    )
+      )
+    })
+    
+    
     output$q1 <- renderUI({
-      input$expert_decision
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-      if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
+      expertdecision()
+      req(input$expert_ID)
+      
+      
       tagList(
         selectInput("q1",
                     "Study design",
-                    choices = c("","case series","cross sectional survey","case control","cohort","non randomised intervention study","RCT","other"),
+                    choices = c(sort(c("","Case series","Cross sectional survey","Case control","Cohort","Non-randomised intervention study","RCT","Qualitative","Nested case control")),"Other"),
                     selected = db$find(sprintf(
                     '{"ID" : %s}', input$expert_ID
                     ),
                     fields = '{"_id": false,"q1": true}'))
       )
-    }}
     })
     
     output$q2 <- renderUI({
-      input$expert_decision
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+      expertdecision()
+      req(input$expert_ID)
+      
       tagList(
         textInput("q2", "If other, please specify:", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                           fields = '{"_id": false,"q2": true}'))
-      )}}
+      )
     })
 
     
     output$q3 <- renderUI({
-      input$expert_decision
+      expertdecision()  
+      req(input$expert_ID)
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+
       tagList(
         textInput("q3", "Setting (country/region)", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                           fields = '{"_id": false,"q3": true}'))
-      )}}
+      )
     })
     
     output$q4 <- renderUI({
-      input$expert_decision
+      expertdecision() 
+      req(input$expert_ID)
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+
       tagList(
         textAreaInput2("q4", "Population studied", width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                                     fields = '{"_id": false,"q4": true}'))
-      )}}
+      )
     })
     
+    # Outcome investigated
     output$q5 <- renderUI({
-      input$expert_decision
+      expertdecision()  
+      req(input$expert_ID)
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+
       tagList(
-        textAreaInput2("q5", "Outcome(s) investigated",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
-                                                              fields = '{"_id": false,"q5": true}'))
-      )}}
+        selectInput("q5", "Outcome(s) investigated",width = "100%", choices =  c("Suicide death", "Suicide attempts/selfharm", "Suicidal thoughts", "Other (please specify below)"), multiple = TRUE,
+                       selected = unlist(stringr::str_split(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                               fields = '{"_id": false,"q5": true}'),", "))
+                       )
+      )
+    })
+    
+    # Update outcome, collapsing for proper saving
+    # This is why it isn't in the lapply call later on
+    observeEvent(input$q5,{
+      db$update(
+        query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
+        update = sprintf('{"$set":{"q5":"%s"}}', paste0(input$q5,collapse = ", "))
+      )
+    })
+    
+    # Other outcomes
+    output$o1 <- renderUI({
+      expertdecision()  
+      req(input$expert_ID)
+      
+      tagList(
+        textInput("o1", "Other outcome(s) investigated (seperate with comma)", width = "100%",
+                    value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                           fields = '{"_id": false,"o1": true}')
+        )
+      )
+    })
+    
+    observeEvent(input$o1,{
+      db$update(
+        query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
+        update = sprintf('{"$set":{"o1":"%s"}}', input$o1)
+      )
     })
     
     output$q6 <- renderUI({
-      input$expert_decision
+      expertdecision()     
+      req(input$expert_ID)
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+
       tagList(
         textAreaInput2("q6", "Sample size (describe)",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                                 fields = '{"_id": false,"q6": true}'))
-      )}}
+      )
     })
     
     output$q7 <- renderUI({
-      input$expert_decision
+      expertdecision()    
+      req(input$expert_ID)
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+
       tagList(
         textAreaInput2("q7", "Key findings",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                                   fields = '{"_id": false,"q7": true}'))
-      )}}
+      )
     })
     
     output$q8 <- renderUI({
-      input$expert_decision
-      
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+      expertdecision() 
+      req(input$expert_ID)
+
       tagList(
         textAreaInput2("q8", "Strengths",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                                   fields = '{"_id": false,"q8": true}'))
-      )}}
+      )
     })
     
     output$q9 <- renderUI({
-      input$expert_decision
+      expertdecision() 
+      req(input$expert_ID)
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+
       tagList(
         textAreaInput2("q9", "Limitations",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                                   fields = '{"_id": false,"q9": true}')),
-      )}}
+      )
     })
     
     output$q10 <- renderUI({
-      input$expert_decision
+      expertdecision() 
+      req(input$expert_ID)
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+
       tagList(
         textAreaInput2("q10", "Implications for practice/policy",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                                   fields = '{"_id": false,"q10": true}'))
-      )}}
+      )
     })
     
     output$q11 <- renderUI({
-      input$expert_decision
+      expertdecision() 
+      req(input$expert_ID)
       
-      if (nrow(data.frame(db$find('{"initial_decision": "Include"}', fields = '{"_id": false,"ID": true}'))) > 0) {
-        
-        if (db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"expert_decision": true}') == "Include") {
-          
+
+        tagList(
+          textAreaInput2("q11", "Implications for research",width = '100%', value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                                               fields = '{"_id": false,"q11": true}'))
+        )
+      
+    })
+    
+    
+    output$q12 <- renderUI({
+      expertdecision() 
+      req(input$expert_ID)
       tagList(
-        textAreaInput2("q11", "Implications for research",width = '100%', value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
-                                                                             fields = '{"_id": false,"q11": true}'))
+        checkboxInput("q12", "Check this box to mark the record as \"Complete\" once you have finished filling out the fields.",
+                      value = as.logical(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                                                          fields = '{"_id": false,"q12": true}'))
+                      )
       )
-      }}
+      
     })
     
  
     # Capture inputs
-    lapply(1:11, function(i){
+    lapply(c(0:4,6:12), function(i){
       observeEvent(input[[paste0("q",i)]],{
         db$update(
           query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
-          update = sprintf('{"$set":{"q%s":"%s"}}', i, input[[paste0("q",i)]])
+          update = sprintf('{"$set":{"q%s":"%s"}}', i, as.character(input[[paste0("q",i)]]))
         )
       })
     })
@@ -414,10 +596,12 @@ output$total_no <- renderText({
     
 output$all_records <- DT::renderDataTable({
   initaldecision()
-  data <- db$find(query = '{}', fields = '{"_id": false,"title": true, "abstract": true,"initial_decision": true, "expert_decision": true, "link": true}')
-  data$link <- sprintf("<a href='%s'>%s</a>", data$link, data$link)
+  data <- db$find(query = '{}', fields = '{"_id": false,"ID": true,"title": true, "abstract": true,"initial_decision": true, "expert_decision": true, "link": true}')
+  data$link <- sprintf("<a href='%s' target='_blank'>Link</a>", data$link)
+  data$ID <- as.character(data$ID)
   DT::datatable(
-        data,
+        data[,c(6,1:5)],
+        rownames = FALSE,
         escape = FALSE
   )
 })
@@ -433,7 +617,58 @@ output$downloadallscreened <- downloadHandler(
   }
 )   
 
+
+# File output -------------------------------------------------------------
+
+# Generate report for that study
+
+output$report <- downloadHandler(
+  # For PDF output, change this to "report.pdf"
+  filename = "report.pdf",
+  content = function(file) {
+    # Copy the report file to a temporary directory before processing it, in
+    # case we don't have write permissions to the current working dir (which
+    # can happen when deployed).
+    tempReport <- file.path(tempdir(), "report.Rmd")
+    
+    file.copy("report.Rmd", tempReport, overwrite = TRUE)
+    
+    # Set up parameters to pass to Rmd document
+    params <- list(ID = input$expert_ID, 
+                   Title =       db$find(query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)), fields = '{"_id": false, "title": true}'),
+                   Authors =     db$find(query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)), fields = '{"_id": false, "authors": true}'),
+                   Abstract =    db$find(query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)), fields = '{"_id": false, "abstract": true}'),
+                   Design =      input$q1,
+                   Designother = input$q2,
+                   Setting =     input$q3,
+                   Population =  input$q4,
+                   Outcome =     input$q5,
+                   Outcomeother =input$o1,
+                   Size =        input$q6,
+                   Findings =    input$q7,
+                   Strength =    input$q8,
+                   Limit =       input$q9,
+                   Policyimp =   input$q10,
+                   Researchimp = input$q11
+    )
+    # Knit the document, passing in the `params` list, and eval it in a
+    # child of the global environment (this isolates the code in the document
+    # from the code in this app).
+    rmarkdown::render(tempReport, output_file = file,
+                      params = params,
+                      envir = new.env(parent = globalenv())
+    )
+  }
+)
+
+
 }
+
+
+
+
+
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
