@@ -210,5 +210,9 @@ def retrieve_elsevier(search_string, database):
         lsr_pipeline_format('sciencedirect.csv', "ScienceDirekt")#reformat the output again, this time for lsr pipeline
 
 
+with open("search_scopus.txt","r") as f:
+    query = f.readline()
 
+print("Running scopus search with following query read from search_scopus.txt: {}".format(query))
 
+retrieve_elsevier(query, "scopus")
