@@ -2,5 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-config.json
+data/config.json
 /*.txt
