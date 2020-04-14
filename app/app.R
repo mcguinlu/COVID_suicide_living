@@ -227,7 +227,14 @@ server <- function(input, output) {
                paste0("<a href='", data$link, "' target='_blank'>Link</a>"),
                "")
       data$ID <- as.character(data$ID)
+      
+      # Fix error created by empty abstracts
+      if (is.null(data$abstract)) {
+      data$abstract <- "NO ABSTRACT"
+      data[, c(5, 1,6,2:4)]
+      } else {
       data[, c(6, 1:5)]
+      }  
     }
     
   }, sanitize.text.function = function(x)
