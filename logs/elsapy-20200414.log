@@ -1,0 +1,163 @@
+2020-04-14 16:12:25,357 - elsapy.elsclient - INFO - Module loaded.
+2020-04-14 16:12:56,336 - elsapy.elsclient - INFO - Module loaded.
+2020-04-14 16:24:31,534 - elsapy.elsclient - INFO - Module loaded.
+2020-04-14 16:24:31,543 - elsapy.elsentity - INFO - Module loaded.
+2020-04-14 16:24:31,543 - elsapy.elsdoc - INFO - Module loaded.
+2020-04-14 16:24:31,552 - elsapy.utils - INFO - Module loaded.
+2020-04-14 16:24:31,553 - elsapy.elssearch - INFO - Module loaded.
+2020-04-14 16:24:59,076 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/search/scopus?query=TITLE-ABS-KEY%28%22selfharm%2A%22+OR+%22self+harm%2A%22+OR+%22self-harm%2A%22+OR+%22self+injur%2A%22+OR+%22selfinjur%2A%22+OR+%22self-injur%2A%22+OR+%22selfmutilat%2A%22+OR+%22self+mutilat%2A%22+OR+%22self-mutilat%2A%22+OR+%22suicid%2A%22+OR+%22parasuicid%2A%22+OR+%22suicide%22+OR+%22suicidal+ideation%22+OR+%22attempt%2A+suicide%22+OR+%22suicide+attempt%2A%22+OR+%22drug+overdose%22+OR+%22selfpoisoning%22+OR+%22self+poisoning%22+OR+%22self-poisoning%22+OR+%22self-injurious+behavi%2A%22+OR+%22selfmutilation%22+OR+%22self+mutilation%22+OR+%22self-mutilation%22+OR+%22automutilation%22+OR+%22suicidal+behavi%2A%22+OR+%22selfdestructive+behavi%2A%22+OR+%22self+destructive+behavi%2A%22+OR+%22self-destructive+behavi%2A%22+OR+%22selfimmolat%2A%22+OR+%22self-immolat%2A%22+OR+%22self+immolat%2A%22+OR+%22cutt%2A%22+OR+%22headbang%22+OR+%22head-bang%22+OR+%22head+bang%22+OR+%22overdose%22+OR+%22selfinflict%2A%22+OR+%22self-inflict%2A%22+OR+%22self+inflict%2A%22+OR+%22hopelessness%22+OR+%22powerlessness%22+OR+%22helplessness%22+OR+%22negative+attitude%2A%22+OR+%22emotional+negativism%22+OR+%22pessimism%22+OR+%22depress%2A%22+OR+%22hopelessness+depression%22+OR+%22passivity%22+OR+%22sad-affect%22+OR+%22sadness%22+OR+%22decreased+affect%22+OR+%22cognitive+rigidity%22+OR+%22suicidality%22+OR+%22suicide+ideation%22%29+AND+TITLE-ABS-KEY%28%22nCoV%22+OR+%22HCoV%22+OR+%22covid+19%22+OR+%22covid-19%22+OR+%22covid19%22+OR+%22coronavirus%22+OR+%2219+ncov%22+OR+%2219-ncov%22+OR+%222019+ncov%22+OR+%222019-ncov%22+OR+%222019ncov%22+OR+%22n-cov%22+OR+%22ncov%22+OR+%22coronavirus+disease%2A%22+OR+%22sars-cov-2%22+OR+%22sars+cov+2%22+OR+%22sars-cov+2%22+OR+%22mers-cov%22+OR+%22mers+cov%22%29+AND+PUBYEAR+%3E+2019
+2020-04-14 16:25:02,199 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/search/scopus?start=25&count=25&query=TITLE-ABS-KEY%28%22selfharm*%22+OR+%22self+harm*%22+OR+%22self-harm*%22+OR+%22self+injur*%22+OR+%22selfinjur*%22+OR+%22self-injur*%22+OR+%22selfmutilat*%22+OR+%22self+mutilat*%22+OR+%22self-mutilat*%22+OR+%22suicid*%22+OR+%22parasuicid*%22+OR+%22suicide%22+OR+%22suicidal+ideation%22+OR+%22attempt*+suicide%22+OR+%22suicide+attempt*%22+OR+%22drug+overdose%22+OR+%22selfpoisoning%22+OR+%22self+poisoning%22+OR+%22self-poisoning%22+OR+%22self-injurious+behavi*%22+OR+%22selfmutilation%22+OR+%22self+mutilation%22+OR+%22self-mutilation%22+OR+%22automutilation%22+OR+%22suicidal+behavi*%22+OR+%22selfdestructive+behavi*%22+OR+%22self+destructive+behavi*%22+OR+%22self-destructive+behavi*%22+OR+%22selfimmolat*%22+OR+%22self-immolat*%22+OR+%22self+immolat*%22+OR+%22cutt*%22+OR+%22headbang%22+OR+%22head-bang%22+OR+%22head+bang%22+OR+%22overdose%22+OR+%22selfinflict*%22+OR+%22self-inflict*%22+OR+%22self+inflict*%22+OR+%22hopelessness%22+OR+%22powerlessness%22+OR+%22helplessness%22+OR+%22negative+attitude*%22+OR+%22emotional+negativism%22+OR+%22pessimism%22+OR+%22depress*%22+OR+%22hopelessness+depression%22+OR+%22passivity%22+OR+%22sad-affect%22+OR+%22sadness%22+OR+%22decreased+affect%22+OR+%22cognitive+rigidity%22+OR+%22suicidality%22+OR+%22suicide+ideation%22%29+AND+TITLE-ABS-KEY%28%22nCoV%22+OR+%22HCoV%22+OR+%22covid+19%22+OR+%22covid-19%22+OR+%22covid19%22+OR+%22coronavirus%22+OR+%2219+ncov%22+OR+%2219-ncov%22+OR+%222019+ncov%22+OR+%222019-ncov%22+OR+%222019ncov%22+OR+%22n-cov%22+OR+%22ncov%22+OR+%22coronavirus+disease*%22+OR+%22sars-cov-2%22+OR+%22sars+cov+2%22+OR+%22sars-cov+2%22+OR+%22mers-cov%22+OR+%22mers+cov%22%29+AND+PUBYEAR+%3E+2019
+2020-04-14 16:25:03,760 - elsapy.utils - INFO - Converting prism:coverDate
+2020-04-14 16:25:04,816 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.ajp.2020.101990
+2020-04-14 16:25:05,677 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.ajp.2020.101990
+2020-04-14 16:25:06,692 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S1876201820300988
+2020-04-14 16:25:07,741 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S1876201820300988
+2020-04-14 16:25:08,742 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.jpsychores.2020.110102
+2020-04-14 16:25:09,784 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.jpsychores.2020.110102
+2020-04-14 16:25:10,784 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S0022399920302087
+2020-04-14 16:25:11,792 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S0022399920302087
+2020-04-14 16:25:12,808 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.ajp.2020.102073
+2020-04-14 16:25:13,622 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.ajp.2020.102073
+2020-04-14 16:25:14,648 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S1876201820301842
+2020-04-14 16:25:15,533 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S1876201820301842
+2020-04-14 16:25:16,533 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.ctcp.2020.101166
+2020-04-14 16:25:17,344 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.ctcp.2020.101166
+2020-04-14 16:25:18,345 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.cell.2020.03.025
+2020-04-14 16:25:19,331 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.cell.2020.03.025
+2020-04-14 16:25:20,331 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S0092867420302877
+2020-04-14 16:25:21,017 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S0092867420302877
+2020-04-14 16:25:22,022 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.psychres.2020.112902
+2020-04-14 16:25:22,882 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.psychres.2020.112902
+2020-04-14 16:25:23,898 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S0165178120302924
+2020-04-14 16:25:24,676 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S0165178120302924
+2020-04-14 16:25:25,681 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.psychres.2020.112895
+2020-04-14 16:25:26,556 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.psychres.2020.112895
+2020-04-14 16:25:27,569 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S0165178120302821
+2020-04-14 16:25:28,340 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S0165178120302821
+2020-04-14 16:25:29,347 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/S2215-0366(20)30077-8
+2020-04-14 16:25:30,069 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/S2215-0366(20)30077-8
+2020-04-14 16:25:31,084 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S2215036620300778
+2020-04-14 16:25:31,862 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S2215036620300778
+2020-04-14 16:25:32,864 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.psychres.2020.112903
+2020-04-14 16:25:33,667 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.psychres.2020.112903
+2020-04-14 16:25:34,673 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1136/bmj.m1164
+2020-04-14 16:25:35,116 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.1136/bmj.m1164
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:36,136 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:25:36,585 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:37,585 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.12659/MSM.923921
+2020-04-14 16:25:38,020 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.12659/MSM.923921
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:39,029 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:25:39,448 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:40,454 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.12114/j.issn.1007-9572.2020.00.261
+2020-04-14 16:25:40,862 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.12114/j.issn.1007-9572.2020.00.261
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:41,869 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:25:42,287 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:43,287 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1136/gpsych-2020-100213
+2020-04-14 16:25:43,731 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.1136/gpsych-2020-100213
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:44,736 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:25:45,175 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:46,193 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1001/jamanetworkopen.2020.3976
+2020-04-14 16:25:46,642 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.1001/jamanetworkopen.2020.3976
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:47,651 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:25:48,053 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:49,068 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.3390/ijerph17062032
+2020-04-14 16:25:49,528 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.3390/ijerph17062032
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:50,532 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:25:50,953 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:25:51,964 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.ajp.2020.101989
+2020-04-14 16:25:52,674 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.ajp.2020.101989
+2020-04-14 16:25:53,693 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S1876201820300976
+2020-04-14 16:25:54,499 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S1876201820300976
+2020-04-14 16:25:55,510 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/S2215-0366(20)30046-8
+2020-04-14 16:25:56,240 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/S2215-0366(20)30046-8
+2020-04-14 16:25:57,255 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S2215036620300468
+2020-04-14 16:25:57,970 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S2215036620300468
+2020-04-14 16:25:58,974 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.3390/ijerph17051729
+2020-04-14 16:25:59,439 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.3390/ijerph17051729
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:00,445 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:26:00,849 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:01,849 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/j.nepr.2020.102780
+2020-04-14 16:26:02,500 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/j.nepr.2020.102780
+2020-04-14 16:26:03,504 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S1471595320302791
+2020-04-14 16:26:04,427 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S1471595320302791
+2020-04-14 16:26:05,442 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/S2215-0366(20)30047-X
+2020-04-14 16:26:06,174 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/S2215-0366(20)30047-X
+2020-04-14 16:26:07,174 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S221503662030047X
+2020-04-14 16:26:07,864 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S221503662030047X
+2020-04-14 16:26:08,868 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1016/S0140-6736(20)30309-3
+2020-04-14 16:26:09,757 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.1016/S0140-6736(20)30309-3
+2020-04-14 16:26:10,757 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/S0140673620303093
+2020-04-14 16:26:11,510 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/pii/S0140673620303093
+2020-04-14 16:26:12,514 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.3760/cma.j.issn.2095-0160.2020.02.014
+2020-04-14 16:26:12,972 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.3760/cma.j.issn.2095-0160.2020.02.014
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:13,975 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:26:14,388 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:15,404 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.7150/ijbs.45120
+2020-04-14 16:26:15,840 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.7150/ijbs.45120
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:16,844 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:26:17,286 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:18,301 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.1080/13548506.2020.1746817
+2020-04-14 16:26:18,726 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.1080/13548506.2020.1746817
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:19,730 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:26:20,145 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:21,148 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.7150/ijbs.45221
+2020-04-14 16:26:21,598 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/doi/10.7150/ijbs.45221
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:22,599 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/pii/nan
+2020-04-14 16:26:23,014 - elsapy.elsentity - WARNING - HTTP 404 Error from https://api.elsevier.com/content/article/pii/nan
+and using headers {'X-ELS-APIKey': 'e3084029ee354f5ee6c3b390bd368953', 'User-Agent': 'elsapy-v0.5.0', 'Accept': 'application/json'}:
+{"service-error":{"status":{"statusCode":"RESOURCE_NOT_FOUND","statusText":"The resource specified cannot be found."}}}
+2020-04-14 16:26:24,018 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/article/doi/10.3382/ps/pez568
+2020-04-14 16:26:24,803 - elsapy.elsentity - INFO - Data loaded for https://api.elsevier.com/content/article/doi/10.3382/ps/pez568
+2020-04-14 16:31:47,844 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/search/scopus?query=TITLE-ABS-KEY%28%22selfharm%2A%22+OR+%22self+harm%2A%22+OR+%22self-harm%2A%22+OR+%22self+injur%2A%22+OR+%22selfinjur%2A%22+OR+%22self-injur%2A%22+OR+%22selfmutilat%2A%22+OR+%22self+mutilat%2A%22+OR+%22self-mutilat%2A%22+OR+%22suicid%2A%22+OR+%22parasuicid%2A%22+OR+%22suicide%22+OR+%22suicidal+ideation%22+OR+%22attempt%2A+suicide%22+OR+%22suicide+attempt%2A%22+OR+%22drug+overdose%22+OR+%22selfpoisoning%22+OR+%22self+poisoning%22+OR+%22self-poisoning%22+OR+%22self-injurious+behavi%2A%22+OR+%22selfmutilation%22+OR+%22self+mutilation%22+OR+%22self-mutilation%22+OR+%22automutilation%22+OR+%22suicidal+behavi%2A%22+OR+%22selfdestructive+behavi%2A%22+OR+%22self+destructive+behavi%2A%22+OR+%22self-destructive+behavi%2A%22+OR+%22selfimmolat%2A%22+OR+%22self-immolat%2A%22+OR+%22self+immolat%2A%22+OR+%22cutt%2A%22+OR+%22headbang%22+OR+%22head-bang%22+OR+%22head+bang%22+OR+%22overdose%22+OR+%22selfinflict%2A%22+OR+%22self-inflict%2A%22+OR+%22self+inflict%2A%22+OR+%22hopelessness%22+OR+%22powerlessness%22+OR+%22helplessness%22+OR+%22negative+attitude%2A%22+OR+%22emotional+negativism%22+OR+%22pessimism%22+OR+%22depress%2A%22+OR+%22hopelessness+depression%22+OR+%22passivity%22+OR+%22sad-affect%22+OR+%22sadness%22+OR+%22decreased+affect%22+OR+%22cognitive+rigidity%22+OR+%22suicidality%22+OR+%22suicide+ideation%22%29+AND+TITLE-ABS-KEY%28%22nCoV%22+OR+%22HCoV%22+OR+%22covid+19%22+OR+%22covid-19%22+OR+%22covid19%22+OR+%22coronavirus%22+OR+%2219+ncov%22+OR+%2219-ncov%22+OR+%222019+ncov%22+OR+%222019-ncov%22+OR+%222019ncov%22+OR+%22n-cov%22+OR+%22ncov%22+OR+%22coronavirus+disease%2A%22+OR+%22sars-cov-2%22+OR+%22sars+cov+2%22+OR+%22sars-cov+2%22+OR+%22mers-cov%22+OR+%22mers+cov%22%29+AND+PUBYEAR+%3E+2019
+2020-04-14 16:31:50,599 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/search/scopus?start=25&count=25&query=TITLE-ABS-KEY%28%22selfharm*%22+OR+%22self+harm*%22+OR+%22self-harm*%22+OR+%22self+injur*%22+OR+%22selfinjur*%22+OR+%22self-injur*%22+OR+%22selfmutilat*%22+OR+%22self+mutilat*%22+OR+%22self-mutilat*%22+OR+%22suicid*%22+OR+%22parasuicid*%22+OR+%22suicide%22+OR+%22suicidal+ideation%22+OR+%22attempt*+suicide%22+OR+%22suicide+attempt*%22+OR+%22drug+overdose%22+OR+%22selfpoisoning%22+OR+%22self+poisoning%22+OR+%22self-poisoning%22+OR+%22self-injurious+behavi*%22+OR+%22selfmutilation%22+OR+%22self+mutilation%22+OR+%22self-mutilation%22+OR+%22automutilation%22+OR+%22suicidal+behavi*%22+OR+%22selfdestructive+behavi*%22+OR+%22self+destructive+behavi*%22+OR+%22self-destructive+behavi*%22+OR+%22selfimmolat*%22+OR+%22self-immolat*%22+OR+%22self+immolat*%22+OR+%22cutt*%22+OR+%22headbang%22+OR+%22head-bang%22+OR+%22head+bang%22+OR+%22overdose%22+OR+%22selfinflict*%22+OR+%22self-inflict*%22+OR+%22self+inflict*%22+OR+%22hopelessness%22+OR+%22powerlessness%22+OR+%22helplessness%22+OR+%22negative+attitude*%22+OR+%22emotional+negativism%22+OR+%22pessimism%22+OR+%22depress*%22+OR+%22hopelessness+depression%22+OR+%22passivity%22+OR+%22sad-affect%22+OR+%22sadness%22+OR+%22decreased+affect%22+OR+%22cognitive+rigidity%22+OR+%22suicidality%22+OR+%22suicide+ideation%22%29+AND+TITLE-ABS-KEY%28%22nCoV%22+OR+%22HCoV%22+OR+%22covid+19%22+OR+%22covid-19%22+OR+%22covid19%22+OR+%22coronavirus%22+OR+%2219+ncov%22+OR+%2219-ncov%22+OR+%222019+ncov%22+OR+%222019-ncov%22+OR+%222019ncov%22+OR+%22n-cov%22+OR+%22ncov%22+OR+%22coronavirus+disease*%22+OR+%22sars-cov-2%22+OR+%22sars+cov+2%22+OR+%22sars-cov+2%22+OR+%22mers-cov%22+OR+%22mers+cov%22%29+AND+PUBYEAR+%3E+2019
+2020-04-14 16:31:52,516 - elsapy.utils - INFO - Converting prism:coverDate
+2020-04-14 23:00:10,975 - elsapy.elsclient - INFO - Module loaded.
+2020-04-14 23:00:10,976 - elsapy.elsentity - INFO - Module loaded.
+2020-04-14 23:00:10,976 - elsapy.elsdoc - INFO - Module loaded.
+2020-04-14 23:00:10,976 - elsapy.utils - INFO - Module loaded.
+2020-04-14 23:00:10,976 - elsapy.elssearch - INFO - Module loaded.
+2020-04-14 23:00:11,976 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/search/scopus?query=TITLE-ABS-KEY%28%22selfharm%2A%22+OR+%22self+harm%2A%22+OR+%22self-harm%2A%22+OR+%22self+injur%2A%22+OR+%22selfinjur%2A%22+OR+%22self-injur%2A%22+OR+%22selfmutilat%2A%22+OR+%22self+mutilat%2A%22+OR+%22self-mutilat%2A%22+OR+%22suicid%2A%22+OR+%22parasuicid%2A%22+OR+%22suicide%22+OR+%22suicidal+ideation%22+OR+%22attempt%2A+suicide%22+OR+%22suicide+attempt%2A%22+OR+%22drug+overdose%22+OR+%22selfpoisoning%22+OR+%22self+poisoning%22+OR+%22self-poisoning%22+OR+%22self-injurious+behavi%2A%22+OR+%22selfmutilation%22+OR+%22self+mutilation%22+OR+%22self-mutilation%22+OR+%22automutilation%22+OR+%22suicidal+behavi%2A%22+OR+%22selfdestructive+behavi%2A%22+OR+%22self+destructive+behavi%2A%22+OR+%22self-destructive+behavi%2A%22+OR+%22selfimmolat%2A%22+OR+%22self-immolat%2A%22+OR+%22self+immolat%2A%22+OR+%22cutt%2A%22+OR+%22headbang%22+OR+%22head-bang%22+OR+%22head+bang%22+OR+%22overdose%22+OR+%22selfinflict%2A%22+OR+%22self-inflict%2A%22+OR+%22self+inflict%2A%22+OR+%22hopelessness%22+OR+%22powerlessness%22+OR+%22helplessness%22+OR+%22negative+attitude%2A%22+OR+%22emotional+negativism%22+OR+%22pessimism%22+OR+%22depress%2A%22+OR+%22hopelessness+depression%22+OR+%22passivity%22+OR+%22sad-affect%22+OR+%22sadness%22+OR+%22decreased+affect%22+OR+%22cognitive+rigidity%22+OR+%22suicidality%22+OR+%22suicide+ideation%22%29+AND+TITLE-ABS-KEY%28%22nCoV%22+OR+%22HCoV%22+OR+%22covid+19%22+OR+%22covid-19%22+OR+%22covid19%22+OR+%22coronavirus%22+OR+%2219+ncov%22+OR+%2219-ncov%22+OR+%222019+ncov%22+OR+%222019-ncov%22+OR+%222019ncov%22+OR+%22n-cov%22+OR+%22ncov%22+OR+%22coronavirus+disease%2A%22+OR+%22sars-cov-2%22+OR+%22sars+cov+2%22+OR+%22sars-cov+2%22+OR+%22mers-cov%22+OR+%22mers+cov%22%29+AND+PUBYEAR+%3E+2019
+2020-04-14 23:00:37,919 - elsapy.elsclient - INFO - Sending GET request to https://api.elsevier.com/content/search/scopus?start=25&count=25&query=TITLE-ABS-KEY%28%22selfharm*%22+OR+%22self+harm*%22+OR+%22self-harm*%22+OR+%22self+injur*%22+OR+%22selfinjur*%22+OR+%22self-injur*%22+OR+%22selfmutilat*%22+OR+%22self+mutilat*%22+OR+%22self-mutilat*%22+OR+%22suicid*%22+OR+%22parasuicid*%22+OR+%22suicide%22+OR+%22suicidal+ideation%22+OR+%22attempt*+suicide%22+OR+%22suicide+attempt*%22+OR+%22drug+overdose%22+OR+%22selfpoisoning%22+OR+%22self+poisoning%22+OR+%22self-poisoning%22+OR+%22self-injurious+behavi*%22+OR+%22selfmutilation%22+OR+%22self+mutilation%22+OR+%22self-mutilation%22+OR+%22automutilation%22+OR+%22suicidal+behavi*%22+OR+%22selfdestructive+behavi*%22+OR+%22self+destructive+behavi*%22+OR+%22self-destructive+behavi*%22+OR+%22selfimmolat*%22+OR+%22self-immolat*%22+OR+%22self+immolat*%22+OR+%22cutt*%22+OR+%22headbang%22+OR+%22head-bang%22+OR+%22head+bang%22+OR+%22overdose%22+OR+%22selfinflict*%22+OR+%22self-inflict*%22+OR+%22self+inflict*%22+OR+%22hopelessness%22+OR+%22powerlessness%22+OR+%22helplessness%22+OR+%22negative+attitude*%22+OR+%22emotional+negativism%22+OR+%22pessimism%22+OR+%22depress*%22+OR+%22hopelessness+depression%22+OR+%22passivity%22+OR+%22sad-affect%22+OR+%22sadness%22+OR+%22decreased+affect%22+OR+%22cognitive+rigidity%22+OR+%22suicidality%22+OR+%22suicide+ideation%22%29+AND+TITLE-ABS-KEY%28%22nCoV%22+OR+%22HCoV%22+OR+%22covid+19%22+OR+%22covid-19%22+OR+%22covid19%22+OR+%22coronavirus%22+OR+%2219+ncov%22+OR+%2219-ncov%22+OR+%222019+ncov%22+OR+%222019-ncov%22+OR+%222019ncov%22+OR+%22n-cov%22+OR+%22ncov%22+OR+%22coronavirus+disease*%22+OR+%22sars-cov-2%22+OR+%22sars+cov+2%22+OR+%22sars-cov+2%22+OR+%22mers-cov%22+OR+%22mers+cov%22%29+AND+PUBYEAR+%3E+2019
+2020-04-14 23:00:39,797 - elsapy.utils - INFO - Converting prism:coverDate
