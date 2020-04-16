@@ -4,3 +4,4 @@
 .Ruserdata
 data/config.json
 /*.txt
+app/*.txt

@@ -45,7 +45,7 @@ Requirements:
 
 
 ## Load configuration
-con_file = open("config.json")
+con_file = open("data/config.json")
 config = json.load(con_file)
 con_file.close()
 
@@ -203,14 +203,14 @@ def retrieve_elsevier(search_string, database):
     ##filenames = ['sciencedirect.csv', 'scopus.csv']
 
     if database=="scopus":
-        reformat_and_update('scopus.csv')#gets the abstracts and makes a csv file
-        lsr_pipeline_format('scopus.csv', "Scopus")  # reformat the output again, this time for lsr pipeline
+        reformat_and_update('data/scopus.csv')#gets the abstracts and makes a csv file
+        lsr_pipeline_format('data/scopus.csv', "Scopus")  # reformat the output again, this time for lsr pipeline
     else:
-        reformat_and_update('sciencedirect.csv')  # gets the abstracts and makes a csv file
-        lsr_pipeline_format('sciencedirect.csv', "ScienceDirekt")#reformat the output again, this time for lsr pipeline
+        reformat_and_update('data/sciencedirect.csv')  # gets the abstracts and makes a csv file
+        lsr_pipeline_format('data/sciencedirect.csv', "ScienceDirekt")#reformat the output again, this time for lsr pipeline
 
 
-with open("search_scopus.txt","r") as f:
+with open("data/search_scopus.txt","r") as f:
     query = f.readline()
 
 print("Running scopus search with following query read from search_scopus.txt: {}".format(query))

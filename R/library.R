@@ -9,4 +9,4 @@ library(dplyr)
 library(utf8)
 library(easyPubMed)
 library(mongolite)
-
+library(reticulate)
