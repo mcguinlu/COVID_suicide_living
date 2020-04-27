@@ -28,8 +28,15 @@ for e in entries:
 
     publication_date.append(e['prism_publicationdate'])
     update_date.append(e['updated'])
+    
     subject.append("")#no info?
-    authors.append(("; ".join(a["name"] for a in e["authors"])))
+    try:
+        authors.append(("; ".join(a["name"] for a in e["authors"])))
+    except:
+        print("Trying to fix empty author instance!")
+        authors.append(("; ".join(a["name"] for a in e["authors"] if "name" in a.keys())))
+        print(authors[-1])
+    
     #print(e["updated"])
 print(entries[1].keys())
 deduplicate ={k:"" for k in ID}
