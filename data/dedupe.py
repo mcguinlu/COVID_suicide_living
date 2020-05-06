@@ -109,9 +109,11 @@ def dedupe_loop_within(wos, name, min_match_title, min_match_abstract):
 
     print("Adding {} rows out of {} to master data and identified {} as duplicates".format(masterdf.shape[0],orig_length, counter))
 
-    masterdf.to_csv("all_results.csv")
-    wos_orig.to_csv( "all_results_with_duplicates-{}.csv".format(date.today()))  # save version that has dupes in it
-
+    #masterdf.to_csv("all_results.csv")
+    #wos_orig.to_csv( "all_results_with_duplicates-{}.csv".format(date.today()))  # save version that has dupes in it
+    masterdf.to_csv(os.path.join("results", "all_results.csv"))
+    wos_orig.to_csv(os.path.join("results", "all_results_with_duplicates-{}.csv".format(date.today())))  # save version that has dupes in it
+    
 
     return masterdf
 
