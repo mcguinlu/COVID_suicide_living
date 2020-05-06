@@ -220,6 +220,13 @@ previous_results <- read.csv("data/results/all_results.csv",
 
 new_results <- all_results[which(all_results$title %notin% previous_results$title), ]
 
+#############DEDUPLICATION
+##usage: maybe add all new results to the previous results spreadsheet, and then run dedupe on the lot? A report, lok=gging which at icles were removed will appear in the same directory as the target csv
+####### this line in the dedupeppy file at the bottom specifies which csv to dedupe: path=os.path.join("results", "all_results.csv")
+#reticulate::py_run_file("data/dedupe.py")
+#
+
+
 if (nrow(new_results)!=0) {
     new_results$initial_decision <- "Undecided"
     new_results$expert_decision <- ""
