@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from fuzzywuzzy import fuzz
 from tqdm import tqdm
-import os
+from datetime import date
 
 def fuzzymatch(a, b, min_match):
     if fuzz.ratio(a, b) > min_match:  # matching ore than specified ratio
@@ -110,7 +110,7 @@ def dedupe_loop_within(wos, name, min_match_title, min_match_abstract):
     print("Adding {} rows out of {} to master data and identified {} as duplicates".format(masterdf.shape[0],orig_length, counter))
 
     masterdf.to_csv("all_results.csv")
-    wos_orig.to_csv( "all_results_with_duplicates.csv")  # save version that has dupes in it
+    wos_orig.to_csv( "all_results_with_duplicates-{}.csv".format(date.today()))  # save version that has dupes in it
 
 
     return masterdf
@@ -120,7 +120,8 @@ def dedupe_me(path, match_title, match_abstract):
     df=pd.read_csv(path)
 
     dedupe_loop_within(df, "all_results.csv", match_title, match_abstract)
-#usage:
 
+
+#usage
 path=os.path.join("results", "all_results.csv")
 dedupe_me(path, 95, 90)
