@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from fuzzywuzzy import fuzz
 from tqdm import tqdm
-
+import os
 
 def fuzzymatch(a, b, min_match):
     if fuzz.ratio(a, b) > min_match:  # matching ore than specified ratio
@@ -121,5 +121,6 @@ def dedupe_me(path, match_title, match_abstract):
 
     dedupe_loop_within(df, "all_results.csv", match_title, match_abstract)
 #usage:
-#path="C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\Documents\\ncov suicide\\COVID_suicide_living-master\\COVID_suicide_living-master\\data\\results\\all_results.csv"
-#dedupe_me(path, 95, 90)
+
+path=os.path.join("results", "all_results.csv")
+dedupe_me(path, 95, 90)
