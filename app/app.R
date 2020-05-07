@@ -89,17 +89,18 @@ ui <- tagList(
              checkboxInput("showallexpert", "Show only records that have not been marked as \"Complete\"", value = FALSE),
              fluidRow(column(width = 6,
              actionButton("expertinclude", "Include"),
-             actionButton("expertexclude", "Exclude")),
-             column(width = 6, align = "right",downloadButton("report", "Generate PDF report for this record")
+             actionButton("expertexclude", "Exclude"),
+             selectInput("exclusion_reason", label = "Exclusion reason (the Exclude button won't work until this is completed.)",
+                          choices = c("","Single case report","Case series <5 cases","Suicide / self-harm not addressed","No original data presented","Other"))),
+             column(width = 6, align = "right",downloadButton("report", "Generate report for this record")
 )),
-             br(),
              tableOutput("expert_table"),
              hidden(div(id = "form",
              fluidRow(
                column(
                  width = 3,
                  uiOutput("basic_header"),
-                 lapply(c(12,0:3), function(i)
+                 lapply(c(13,12,0:3), function(i)
                    uiOutput(paste0("q", i)))
                ),
                column(width = 8,
@@ -124,6 +125,11 @@ ui <- tagList(
              ))
     ),
     
+    tabPanel(title = "Expert decision table",
+             br(),
+             DT::dataTableOutput("expert_records")
+             
+    ),
     
     tabPanel(title = "About and Preferences",
              # Application title
@@ -134,10 +140,15 @@ ui <- tagList(
              h4("Choose file extension"),
              selectInput(
                "downloadtype",
-               "Download file extension",
+               "Download file extension for data",
                choices = c("xlsx","csv")
              ),
-
+             selectInput(
+               "downloadtype_report",
+               "Download file extension for report",
+               choices = c("pdf","docx")
+             ),
+             
              )
     
     ),
@@ -159,7 +170,7 @@ useShinyjs()
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
     
     waiter::waiter_hide()
 
@@ -289,7 +300,7 @@ server <- function(input, output) {
   output$expertID <- renderUI({
     input$expertexclude
     initaldecision()
-    
+
     if (input$showallexpert == TRUE) {
       find <- '{"initial_decision": "Include", "q12": "FALSE"}'
       selected <- ""
@@ -333,6 +344,8 @@ server <- function(input, output) {
     } else {
       hide("form")
     }
+    
+    updateSelectInput(session, "exclusion_reason",selected = "")
   })
       
 
@@ -348,6 +361,7 @@ server <- function(input, output) {
     })
     
     observeEvent(input$expertexclude,{
+      req(input$exclusion_reason)
       db$update(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), update = '{"$set":{"expert_decision":"Exclude", "initial_decision":"Exclude" }}')
     })
     
@@ -363,12 +377,30 @@ server <- function(input, output) {
       }
 
       if(nrow(db$find(find, fields = '{"_id": false,"ID": true}')) != 0){
-        data <- db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), fields ='{"_id": false,"ID": true,"title": true, "abstract": true, "authors": true, "link": true, "initial_decision": true, "expert_decision": true,"q12": true}' )
+        data <- db$find(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                        fields ='{"_id": false,"ID": true,"title": true, "abstract": true, "authors": true, "link": true, "initial_decision": true, "expert_decision": true,"q12": true}')
         data$link <- ifelse(data$link!="",paste0("<a href='", data$link, "' target='_blank'>Link</a>"),"")
         data$ID <- as.character(data$ID)
-        colnames(data)[6] <- "Complete"
-        data[,c(8,3,1,2,4,5,7,6)]
+      if (is.null(data$abstract)) {
+        data$abstract <- "NO ABSTRACT"
+      } 
+      if (is.null(data$authors)) {
+        data$authors <- "NO AUTHORS LISTED"
+      } 
+        
+        data <- data[, c("ID",
+                 "title",
+                 "authors",
+                 "abstract",
+                 "link",
+                 "initial_decision",
+                 "expert_decision",
+                 "q12")]
+        colnames(data)[8] <- "Complete"
+        data
       }
+      
+      
       
     }, sanitize.text.function = function(x) x
     )
@@ -391,7 +423,6 @@ server <- function(input, output) {
             h4("Advanced details")
           )
     })
-      
     
     
     output$q0 <- renderUI({
@@ -583,17 +614,37 @@ server <- function(input, output) {
       
     })
     
- 
+    output$q13 <- renderUI({
+      expertdecision() 
+      req(input$expert_ID)
+      tagList(
+        checkboxInput("q13", "Check this box to mark the record as a \"Background\" record, which does not need data extraction",
+                      value = as.logical(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                 fields = '{"_id": false,"q13": true}')
+                                         )
+        )
+      )
+      
+    })
+    
+
     # Capture inputs
-    lapply(c(0:4,6:12), function(i){
+    lapply(c(0:4,6:13), function(i){
       observeEvent(input[[paste0("q",i)]],{
         db$update(
           query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
-          update = sprintf('{"$set":{"q%s":"%s"}}', i, as.character(input[[paste0("q",i)]]))
+          update = sprintf('{"$set":{"q%s":"%s"}}', i, gsub("\\n","\\\\n",gsub('"','\\\\"',as.character(input[[paste0("q",i)]]))))
         )
       })
     })
         
+    
+    observeEvent(input$exlusion_reason,{
+      db$update(
+        query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
+        update = sprintf('{"$set":{"exclusion_reason":"%s"}}', as.character(input$exclusion_reason))
+      )
+    })
 
 # All screened ------------------------------------------------------------
 
@@ -603,11 +654,11 @@ output$total_no <- renderText({
     
 output$all_records <- DT::renderDataTable({
   initaldecision()
-  data <- db$find(query = '{}', fields = '{"_id": false,"ID": true,"title": true, "abstract": true,"initial_decision": true, "expert_decision": true, "link": true}')
+  data <- db$find(query = '{}', fields = '{"_id": false,"ID": true,"title": true, "abstract": true,"initial_decision": true, "expert_decision": true, "link": true, "authors":true}')
   data$link <- sprintf("<a href='%s' target='_blank'>Link</a>", data$link)
   data$ID <- as.character(data$ID)
   DT::datatable(
-        data[,c(6,1:5)],
+        data[,c(7,1:6)],
         rownames = FALSE,
         escape = FALSE
   )
@@ -625,26 +676,62 @@ output$downloadallscreened <- downloadHandler(
 )   
 
 
+# Expert decisions --------------------------------------------------------
+
+output$expert_records <- DT::renderDataTable({
+  expertdecision()
+  data <- db$find(query = '{}', fields = '{"_id": false,"ID": true,"title": true, "abstract": true,"initial_decision": true, "expert_decision": true, "link": true, "authors":true, "exclusion_reason": true, "q12": true,"q13":true,"q0":true }')
+  data <- data %>% dplyr::filter(expert_decision != "")
+  colnames(data)[which(colnames(data)=="q13")] <- "Background?"
+  colnames(data)[which(colnames(data)=="q12")] <- "Complete?"
+  colnames(data)[which(colnames(data)=="q0")] <- "Expert"
+  data$link <- sprintf("<a href='%s' target='_blank'>Link</a>", data$link)
+  data$ID <- as.character(data$ID)
+  DT::datatable(
+    data[, c(
+      "ID",
+      "title",
+      "authors",
+      "abstract",
+      "link",
+      "Expert",
+      "expert_decision",
+      "Complete?",
+      "Background?"
+    )], 
+    rownames = FALSE,
+    escape = FALSE
+  )
+})
+
+
 # File output -------------------------------------------------------------
 
 # Generate report for that study
 
 output$report <- downloadHandler(
   # For PDF output, change this to "report.pdf"
-  filename = "report.pdf",
+  filename = paste0("report.",isolate(input$downloadtype_report)),
   content = function(file) {
     # Copy the report file to a temporary directory before processing it, in
     # case we don't have write permissions to the current working dir (which
     # can happen when deployed).
+    
     tempReport <- file.path(tempdir(), "report.Rmd")
     
-    file.copy("report.Rmd", tempReport, overwrite = TRUE)
+    if (isolate(input$downloadtype_report) == "pdf") {
+    file.copy("report_pdf.Rmd", tempReport, overwrite = TRUE)
+    } else {
+    file.copy("report_word.Rmd", tempReport, overwrite = TRUE)
+    }
+    
     
     # Set up parameters to pass to Rmd document
     params <- list(ID = input$expert_ID, 
                    Title =       db$find(query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)), fields = '{"_id": false, "title": true}'),
                    Authors =     db$find(query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)), fields = '{"_id": false, "authors": true}'),
                    Abstract =    db$find(query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)), fields = '{"_id": false, "abstract": true}'),
+                   Link =        db$find(query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)), fields = '{"_id": false, "link": true}'),
                    Design =      input$q1,
                    Designother = input$q2,
                    Setting =     input$q3,
@@ -661,7 +748,8 @@ output$report <- downloadHandler(
     # Knit the document, passing in the `params` list, and eval it in a
     # child of the global environment (this isolates the code in the document
     # from the code in this app).
-    rmarkdown::render(tempReport, output_file = file,
+    rmarkdown::render(tempReport,
+                      output_file = file,
                       params = params,
                       envir = new.env(parent = globalenv())
     )

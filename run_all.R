@@ -202,11 +202,14 @@ for (row in 1:nrow(all_results)) {
   }
 }
 
-for (col in 0:12) {
+for (col in 0:13) {
   all_results[[paste0("q",col)]] <- character(length = nrow(all_results))
 }
 
 all_results$q12 <- "FALSE"
+all_results$q13 <- "FALSE"
+
+all_results$exclusion_reason <- ""
 
 all_results$extraction_date = rep(format(Sys.time(), "%Y-%m-%d"),length(all_results$title))
 
@@ -219,6 +222,18 @@ previous_results <- read.csv("data/results/all_results.csv",
                              header = TRUE)
 
 new_results <- all_results[which(all_results$title %notin% previous_results$title), ]
+
+write.csv()
+
+reticulate()
+
+read.csv()
+
+
+
+
+
+# Add DOI deduplication
 
 if (nrow(new_results)!=0) {
     new_results$initial_decision <- "Undecided"

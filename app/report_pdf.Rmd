@@ -1,0 +1,90 @@
+---
+title: "Study rapid report"
+output: pdf_document
+params:
+  ID: NA
+  Title: NA
+  Authors: NA
+  Abstract: NA
+  Link: NA
+  Design: NA
+  Designother: NA
+  Setting: NA
+  Population: NA
+  Outcome: NA
+  Outcomeother: NA
+  Size: NA
+  Findings: NA
+  Strength: NA
+  Limit: NA
+  Policyimp: NA
+  Researchimp: NA
+---
+
+# Reference information
+
+#### ID No: 
+  
+`r params$ID`
+  
+#### Title: 
+
+`r params$Title`
+
+#### Authors:  
+  
+`r params$Authors`
+
+#### Link
+
+[Click here to view this paper online](`r params$Link`)
+
+### Abstract  
+  
+`r params$Abstract`
+
+# Study details  
+
+### Study design  
+  
+`r params$Design`  
+  
+`r params$Designother`  
+
+### Setting (country / region)  
+  
+`r params$Setting`  
+
+### Population studied  
+  
+`r params$Population`  
+
+### Outcomes investigated  
+
+`r params$Outcome`  
+  
+`r params$Outcomeother`  
+
+### Sample size  
+  
+`r params$Size`  
+
+### Key findings  
+  
+`r params$Findings`  
+
+### Strengths  
+  
+`r params$Strength`  
+
+### Limitations  
+  
+`r params$Limit`  
+
+### Implications for practice / policy  
+  
+`r params$Policyimp`  
+
+### Implications for research  
+  
+`r params$Researchimp`  

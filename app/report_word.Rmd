@@ -1,10 +1,11 @@
 ---
 title: "Study rapid report"
-output: pdf_document
+output: word_document
 params:
   ID: NA
   Title: NA
   Authors: NA
+  Link: NA
   Abstract: NA
   Design: NA
   Designother: NA
@@ -33,6 +34,10 @@ params:
 #### Authors:  
   
 `r params$Authors`
+
+#### Link
+
+[Click here to view this paper online](`r params$Link`)
 
 ### Abstract  
   
