@@ -3,6 +3,7 @@ import re
 from fuzzywuzzy import fuzz
 from tqdm import tqdm
 from datetime import date
+import os
 
 def fuzzymatch(a, b, min_match):
     if fuzz.ratio(a, b) > min_match:  # matching ore than specified ratio
