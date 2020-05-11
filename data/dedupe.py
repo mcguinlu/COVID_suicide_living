@@ -1,9 +1,10 @@
 import pandas as pd
 import re
-import os
 from fuzzywuzzy import fuzz
 from tqdm import tqdm
 from datetime import date
+import os
+
 
 def fuzzymatch(a, b, min_match):
     if fuzz.ratio(a, b) > min_match:  # matching ore than specified ratio
@@ -12,7 +13,7 @@ def fuzzymatch(a, b, min_match):
         # print(b)
         # print(fuzz.ratio(a, b))
         return True
-        
+
     return False  # match is less, therefore text is too different
 
 
@@ -77,13 +78,13 @@ def rowmatch(row, indexes, mydict, min_match_title, min_match_abstrct):
 
 
 def dedupe_loop_within(wos, name, min_match_title, min_match_abstract):
-    wos_orig= wos.copy()
+    wos_orig = wos.copy()
     wos_orig["Deduplication_Notes"] = ["" for d in wos_orig["title"].values]  # has no abstracts
-    orig_length=wos.shape[0]
+    orig_length = wos.shape[0]
     print("Deduplicating {} data".format(name))
     new_rows = []
     counter = 0
-    masterdf=pd.DataFrame(columns=wos.columns.values)
+    masterdf = pd.DataFrame(columns=wos.columns.values)
     #
 
     pd.set_option("display.max_colwidth", 5000)
@@ -98,95 +99,116 @@ def dedupe_loop_within(wos, name, min_match_title, min_match_abstract):
                 # print(index)
                 # print(masterdf.at[index, "Deduplication_Notes"])
                 wos_orig.at[i, "Deduplication_Notes"] = "{} CHECK DUPLICATE STATUS [SOURCE:{} {}]".format(
-                    str(wos_orig.at[index, "Deduplication_Notes"]),str(masterdf.loc[index]["source"]),
-                    re.sub(r"\s+", " ", masterdf.loc[index].to_string().replace("\n", "; "))).strip()  # modift masterdf in place
+                    str(wos_orig.at[index, "Deduplication_Notes"]), str(masterdf.loc[index]["source"]),
+                    re.sub(r"\s+", " ",
+                           masterdf.loc[index].to_string().replace("\n", "; "))).strip()  # modift masterdf in place
 
                 # print(masterdf.at[index, "Deduplication_Notes"])
                 counter += 1
             else:
                 masterdf = masterdf.append(row, ignore_index=True)
-                #print(masterdf.head())
+                # print(masterdf.head())
             pbar.update(1)
 
-    print("Adding {} rows out of {} to master data and identified {} as duplicates".format(masterdf.shape[0],orig_length, counter))
+    print(
+        "Adding {} rows out of {} to master data and identified {} as duplicates".format(masterdf.shape[0], orig_length,
+                                                                                         counter))
 
-    #masterdf.to_csv("all_results.csv")
-    #wos_orig.to_csv( "all_results_with_duplicates-{}.csv".format(date.today()))  # save version that has dupes in it
-    masterdf.to_csv("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living\\data\\results\\all_results.csv")
-    wos_orig.to_csv("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living\\data\\results\\all_results_with_duplicates-{}.csv")  # save version that has dupes in it
-    
+    # masterdf.to_csv("all_results.csv")
+    # wos_orig.to_csv( "all_results_with_duplicates-{}.csv".format(date.today()))  # save version that has dupes in it
+    masterdf.to_csv(os.path.join("results", "all_results.csv"))
+    wos_orig.to_csv(os.path.join("results", "all_results_with_duplicates-{}.csv".format(
+        date.today())))  # save version that has dupes in it
 
     return masterdf
 
-def dedupe_loop_additional(wos, new_df, name, min_match_title, min_match_abstract):
+
+def dedupe_loop_additional(original, new, name, min_match_title, min_match_abstract):
     print("Deduping additional dataframe")
-    print(new_df.shape[0])
-    wos_orig= wos.copy()
-    wos_orig["Deduplication_Notes"] = ["" for d in wos_orig["title"].values]  # has no abstracts
-    orig_length=wos.shape[0]
-    print("Deduplicating {} data".format(name))
+    #print(new_df.shape[0])
+    #wos_orig = wos.copy()
+    #wos_orig["Deduplication_Notes"] = ["" for d in wos_orig["title"].values]  # has no abstracts
+    #orig_length = wos.shape[0]
+    #print("Deduplicating {} data".format(name))
     new_rows = []
     counter = 0
-    masterdf=pd.DataFrame(columns=wos.columns.values)
-    masterdf=wos.copy()
+    masterdf = original.copy()
+    new_deduped=pd.DataFrame(columns=list(new.columns))
     #
 
+    previous=[]
+    duplicate= []
+
     pd.set_option("display.max_colwidth", 5000)
+    print("Iterating {} rows of new data to find duplicates".format(new.shape[0]))
+    with tqdm(total=new.shape[0]) as pbar:
 
-    with tqdm(total=new_df.shape[0]) as pbar:
-
-        for i, row in new_df.iterrows():
+        for i, row in new.iterrows():
             mydict = masterdf.to_dict()
             indexes = list(masterdf.index.values)  # iterate over dict rather than df for 6 times speedup!
-            #print(row.to_string())
+            # print(row.to_string())
             match, index = rowmatch(row, indexes, mydict, min_match_title, min_match_abstract)
             if match:
                 # print(index)
                 # print(masterdf.at[index, "Deduplication_Notes"])
-                wos_orig.at[i, "Deduplication_Notes"] = "{} CHECK DUPLICATE STATUS [SOURCE:{} {}]".format(
-                    str(wos_orig.at[index, "Deduplication_Notes"]),str(masterdf.loc[index]["source"]),
-                    re.sub(r"\s+", " ", masterdf.loc[index].to_string().replace("\n", "; "))).strip()  # modift masterdf in place
+                previous.append(re.sub(r"\s+", " ",row.to_string().replace("\n", "; ")))
+                duplicate.append(re.sub(r"\s+", " ",masterdf.loc[index].to_string().replace("\n", "; ")))
+
+                #print("For new entry:{}\nCHECK DUPLICATE STATUS [SOURCE:{} {}]".format(re.sub(r"\s+", " ",row.to_string().replace("\n", "; ")), str(masterdf.loc[index]["source"]),re.sub(r"\s+", " ",masterdf.loc[index].to_string().replace("\n", "; "))).strip())
+
 
                 # print(masterdf.at[index, "Deduplication_Notes"])
                 counter += 1
             else:
                 masterdf = masterdf.append(row, ignore_index=True)
-                #print(masterdf.head())
+                new_deduped = new_deduped.append(row, ignore_index=True)
+                # print(masterdf.head())
             pbar.update(1)
 
-    print("Adding {} rows out of {} to master data and identified {} as duplicates".format(masterdf.shape[0],orig_length, counter))
+    print("Adding {} rows out of {} to master data and identified {} as duplicates".format(new_deduped.shape[0], new.shape[0],counter))
 
-    masterdf.to_csv("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living\\data\\results\\all_results_updated.csv")
-    wos_orig.to_csv("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living\\data\\results\\all_results_with_duplicates-{}.csv")  # save version that has dupes in it
+    print("Replacing NA with empty spaces...")
+    new_deduped= new_deduped.fillna("")
+    new_deduped.to_csv(name)
+    print("Saved the new, deduplicated rows as {}".format(name))
 
+    deduped = pd.DataFrame(columns=["Previous", "Duplicate"])
+    deduped["Previous"]= previous
+    deduped["Duplicate"] = duplicate
+    deduped.to_csv("duplication_report.csv")
 
-    return masterdf
 
 
 def dedupe_me(path, match_title, match_abstract, path_2=""):
+    df = pd.read_csv(path)
+    print("Reading the file all_results_tmp.csv that contains the previous results. It has {} records, and its {} column names are {}".format(df.shape[0], len(list(df.columns)), list(df.columns)))
+    if path_2 != "":
+        df_toadd = pd.read_csv(path_2)
+        print("Reading the file new_results.csv that contains the new results. It has {} records, and its {} column names are {}".format(df_toadd.shape[0], len(list(df.columns)), list(df_toadd.columns)))
 
-    df=pd.read_csv(path)
-    print(list(df.columns.values))
-    if path_2 !="":
-        df_toadd=pd.read_csv(path_2)
+        ###debugging column names
+        #for col in list(df.columns):
+            #if col not in list(df_toadd.columns):
+               # print(col)
+        #print("df 2")
+        #for col in list(df_toadd.columns):
+            #if col not in list(df.columns):
+                #print(col)
 
-        dedupe_loop_additional(df,df_toadd, "all_results.csv", match_title, match_abstract)
+        dedupe_loop_additional(df, df_toadd, "new_and_deduped.csv", match_title, match_abstract)
     else:
-        dedupe_loop_within(df, "all_results.csv", match_title, match_abstract)
+        dedupe_loop_within(df, "new_and_deduped.csv", match_title, match_abstract)
 
 
-#path="C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\Documents\\ncov suicide\\COVID_suicide_living-master\\COVID_suicide_living-master\\data\\results\\all_results.csv"
-#path_new="C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\Documents\\ncov suicide\\COVID_suicide_living-master\\COVID_suicide_living-master\\data\\results\\all_results_toadd.csv"
+path = "all_results_tmp.csv"
+path_new = "new_results.csv"
 
-#dedupe_me(path, 95, 90,path_new)
+#alternative if you have problems with relative and absolute paths, try this! its the OS modeule that has an option to grab the current working directorys absolute path:
 
-#usage
-# path=os.path.join("all_results.csv")
-# path_new=os.path.join(all_results_toadd.csv")
+######################FOR PATH PROBLEMS###########################
+#path = os.path.join(os.getcwd(), "all_results_tmp.csv")
+#path = os.path.join(os.getcwd(), "new_results.csv")
 
-path="C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living\\data\\results\\new_results.csv"
-path_new="C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living\\data\\results\\all_results_tmp.csv"
+dedupe_me(path, 95, 90, path_new)  # use this when adding data. creates the file "results/all_results_updated.csv"
 
-#dedupe_me(path, 95, 90) #USE THIS WHEN DEDUPING WITHIN< TO GET RID OF THE 200 in all_results!
-
-dedupe_me(path, 95, 90, path_new) #use this when adding data. creates the file "results/all_results_updated.csv"
+# dedupe_me(path, 95, 90)#USE THIS WHEN DEDUPING WITHIN< TO GET RID OF THE dupes in the previous screening!
