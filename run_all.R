@@ -25,9 +25,6 @@ pudmed_query <- readLines("data/search_regexes_pubmed.txt")
 # Library calls
 source("R/library.R")
 
-# Load updating scripts
-source("R/perform_search.R")
-
 # Load searching script
 source("R/perform_search.R")
 
@@ -226,6 +223,8 @@ previous_results <- read.csv("data/results/all_results.csv",
 previous_results_tmp <- previous_results %>%
   select(-expert_decision,-initial_decision,-ID)
 
+previous_results_tmp$title <- gsub("\\.","",previous_results_tmp$title)
+all_results$title <- gsub("\\.","",all_results$title)
 
 write.csv(previous_results_tmp, "data/results/all_results_tmp.csv",
           row.names = FALSE,
@@ -235,47 +234,6 @@ write.csv(previous_results_tmp, "data/results/all_results_tmp.csv",
 write.csv(all_results, "data/results/new_results.csv",
           row.names = FALSE,
           fileEncoding = "UTF-8")
-
-all_results$title <- gsub("\\.","",all_results$title)
-all_results$title <- stringr::str_to_title(all_results$title)
-
-previous_results$title <- gsub("\\.","",previous_results$title)
-previous_results$title <- stringr::str_to_title(previous_results$title)
-
-new_results <- all_results[which(all_results$link %notin% previous_results$link), ]
-new_results <- new_results[which(new_results$title %notin% previous_results$title), ]
-
-new_results2 <- new_results %>%
-distinct(title, .keep_all = TRUE)
-
-
-
-
-# if (nrow(new_results)!=0) {
-#     new_results$initial_decision <- "Undecided"
-#     new_results$expert_decision <- ""
-#     
-#     
-#     if (max(previous_results$ID)==-Inf) {
-#       new_results$ID <- seq(1:nrow(new_results))
-#     } else {
-#       new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
-#     }
-# }
-# 
-# new_results$o1 <- character(length = nrow(new_results))
-
-
-
-
-
-
-
-
-
-
-
-
 
 #############DEDUPLICATION
 ##usage: maybe add all new results to the previous results spreadsheet, and then
@@ -288,6 +246,33 @@ distinct(title, .keep_all = TRUE)
 reticulate::py_run_file("data/dedupe.py")
 #
 
+# Read in deduplicated
+new_results <- read.csv("data/results/new_and_deduped.csv",
+                        stringsAsFactors = FALSE) %>%
+  select(-X) %>%
+  mutate_all(replace_na, replace = "") %>%
+  distinct(link, .keep_all = TRUE)
+  
+# Deduplicate based on DOI also
+# Captures thing like different languages and other inexplicable results
+# E.g. [https://doi.org/10.2196/19297]
+new_results <- new_results[which(new_results$link %notin% previous_results$link),]
+
+
+# Clean and prep for addition
+if (nrow(new_results)!=0) {
+    new_results$initial_decision <- "Undecided"
+    new_results$expert_decision <- ""
+
+
+    if (max(previous_results$ID)==-Inf) {
+      new_results$ID <- seq(1:nrow(new_results))
+    } else {
+      new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
+    }
+}
+
+new_results$o1 <- character(length = nrow(new_results))
 
 all_results <- rbind(previous_results,
                      new_results)
