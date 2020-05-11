@@ -2,7 +2,7 @@
 """
 Created on Tue Mar 31 15:21:25 2020
 
-@author: ja18581
+@author: Babatunde Kazeem Olorisade and Lena Schmidt
 """
 
 """An example program that uses the elsapy module"""
@@ -45,7 +45,7 @@ Requirements:
 
 
 ## Load configuration
-con_file = open("data/config.json")
+con_file = open("config.json")
 config = json.load(con_file)
 con_file.close()
 
@@ -128,8 +128,7 @@ def doi_fulltext(doi = None):
     if doi_doc.read(client):
         abstract =  doi_doc.data['coredata']['dc:description']
         return abstract
-    else:
-        print("Read document failed.")
+
         
         
 def pii_fulltext(pii = None):
@@ -138,8 +137,7 @@ def pii_fulltext(pii = None):
     if pii_doc.read(client):
         abstract =  pii_doc.data['coredata']['dc:description']
         return abstract
-    else:
-        print ("Read document failed.")
+
 
 def scopus_abs(scopus_id=None):
     ## Scopus (Abtract) document example
@@ -148,32 +146,31 @@ def scopus_abs(scopus_id=None):
     if scp_doc.read(client):
         print("scp_doc.title: ", scp_doc.title)
         scp_doc.write()   
-    else:
-        print("Read document failed.")
+
    
 def lsr_pipeline_format(filename, source_name):
     df = pd.read_csv(filename)
 
     #['dc:identifier', 'dc:title', 'load-date', 'prism:coverDate', 'prism:doi', 'pii', 'abstract']
 
-    title=df['dc:title']
-    abstract = df['abstract']
-    authors = ["" for x in df['dc:title']]#empty list of proper length
-    source = [source_name for x in df['dc:title']]
+    title=df.get('dc:title', "")
+    abstract = df.get('abstract', "")
+    authors = ["" for x in df.get('dc:title', "")]#empty list of proper length
+    source = [source_name for x in df.get('dc:title', "")]
 
     link = []
     url = []
-    for l in df["prism:doi"]:
+    for l in df.get('prism:doi', ""):
         value="https://www.doi.org/{}".format(l)#piece together hyperlink
         link.append(value)#double, becasue the MA and rss feed files also have 2 different hyperlink fields
         url.append(value)
 
 
-    ID = df["prism:doi"]
-    publication_date = df["prism:coverDate"]  # there were 2 dates for each retrieved record, this is the earlier date
-    update_date=["" for x in df['dc:title']]#empty list of proper length
-    subject=["" for x in df['dc:title']]#empty list of proper length
-    publication_date_orig=["" for x in df['dc:title']]#empty list of proper length
+    ID = df.get('prism:doi', "")
+    publication_date = df.get('prism:coverDate', "")  # there were 2 dates for each retrieved record, this is the earlier date
+    update_date=["" for x in df.get('dc:title', "")]#empty list of proper length
+    subject=["" for x in df.get('dc:title', "")]#empty list of proper length
+    publication_date_orig=["" for x in df.get('dc:title', "")]#empty list of proper length
 
     df = pd.DataFrame(list(zip(title, abstract, authors, link, url, source, ID, publication_date, update_date, subject,
                                publication_date_orig)),
@@ -202,6 +199,7 @@ def retrieve_elsevier(search_string, database):
 
     ##filenames = ['sciencedirect.csv', 'scopus.csv']
 
+    
     if database=="scopus":
         reformat_and_update('data/scopus.csv')#gets the abstracts and makes a csv file
         lsr_pipeline_format('data/scopus.csv', "Scopus")  # reformat the output again, this time for lsr pipeline
