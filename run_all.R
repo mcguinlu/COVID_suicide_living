@@ -32,8 +32,10 @@ source("R/perform_search.R")
 source("R/perform_search.R")
 
 # Set working directory
+if (interactive()==FALSE) {
 WORKING_DIR=readLines("WORKING_DIR.txt")
 setwd(WORKING_DIR)
+}
 
 # Read in credentials
 GITHUB_USER <- readLines("GITHUB_USER.txt")
@@ -221,33 +223,71 @@ previous_results <- read.csv("data/results/all_results.csv",
                              stringsAsFactors = FALSE,
                              header = TRUE)
 
-new_results <- all_results[which(all_results$title %notin% previous_results$title), ]
-
-write.csv()
-
-reticulate()
-
-read.csv()
+previous_results_tmp <- previous_results %>%
+  select(-expert_decision,-initial_decision,-ID)
 
 
+write.csv(previous_results_tmp, "data/results/all_results_tmp.csv",
+          row.names = FALSE,
+          fileEncoding = "UTF-8")
+
+
+write.csv(all_results, "data/results/new_results.csv",
+          row.names = FALSE,
+          fileEncoding = "UTF-8")
+
+all_results$title <- gsub("\\.","",all_results$title)
+all_results$title <- stringr::str_to_title(all_results$title)
+
+previous_results$title <- gsub("\\.","",previous_results$title)
+previous_results$title <- stringr::str_to_title(previous_results$title)
+
+new_results <- all_results[which(all_results$link %notin% previous_results$link), ]
+new_results <- new_results[which(new_results$title %notin% previous_results$title), ]
+
+new_results2 <- new_results %>%
+distinct(title, .keep_all = TRUE)
 
 
 
-# Add DOI deduplication
 
-if (nrow(new_results)!=0) {
-    new_results$initial_decision <- "Undecided"
-    new_results$expert_decision <- ""
-    
-    
-    if (max(previous_results$ID)==-Inf) {
-      new_results$ID <- seq(1:nrow(new_results))
-    } else {
-      new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
-    }
-}
+# if (nrow(new_results)!=0) {
+#     new_results$initial_decision <- "Undecided"
+#     new_results$expert_decision <- ""
+#     
+#     
+#     if (max(previous_results$ID)==-Inf) {
+#       new_results$ID <- seq(1:nrow(new_results))
+#     } else {
+#       new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
+#     }
+# }
+# 
+# new_results$o1 <- character(length = nrow(new_results))
 
-new_results$o1 <- character(length = nrow(new_results))
+
+
+
+
+
+
+
+
+
+
+
+
+#############DEDUPLICATION
+##usage: maybe add all new results to the previous results spreadsheet, and then
+#run dedupe on the lot? A report, logging which articles were removed will
+#appear in the same directory as the target csv 
+
+#this line in the
+#dedupeppy file at the bottom specifies which csv to dedupe:
+#path=os.path.join("results", "all_results.csv")
+reticulate::py_run_file("data/dedupe.py")
+#
+
 
 all_results <- rbind(previous_results,
                      new_results)
