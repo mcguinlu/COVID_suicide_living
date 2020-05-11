@@ -363,7 +363,11 @@ server <- function(input, output, session) {
     observeEvent(input$expertexclude,{
       req(input$exclusion_reason)
       db$update(query = sprintf('{"ID" : %s}',as.numeric(input$expert_ID)), update = '{"$set":{"expert_decision":"Exclude", "initial_decision":"Exclude" }}')
-    })
+      db$update(
+        query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
+        update = sprintf('{"$set":{"exclusion_reason":"%s"}}', as.character(input$exclusion_reason))
+      )
+     })
     
     
     output$expert_table <- renderTable({
@@ -639,12 +643,12 @@ server <- function(input, output, session) {
     })
         
     
-    observeEvent(input$exlusion_reason,{
-      db$update(
-        query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
-        update = sprintf('{"$set":{"exclusion_reason":"%s"}}', as.character(input$exclusion_reason))
-      )
-    })
+    # observeEvent(input$exclusion_reason,{
+    #   db$update(
+    #     query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
+    #     update = sprintf('{"$set":{"exclusion_reason":"%s"}}', as.character(input$exclusion_reason))
+    #   )
+    # })
 
 # All screened ------------------------------------------------------------
 
