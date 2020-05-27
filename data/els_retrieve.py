@@ -12,6 +12,7 @@ from elsapy.elsdoc import FullDoc, AbsDoc
 from elsapy.elssearch import ElsSearch
 import json
 import pandas as pd
+import re
 
 
 """
@@ -150,27 +151,33 @@ def scopus_abs(scopus_id=None):
    
 def lsr_pipeline_format(filename, source_name):
     df = pd.read_csv(filename)
+    filler= ["Not available"]* df.shape[0]#list of row number length
 
     #['dc:identifier', 'dc:title', 'load-date', 'prism:coverDate', 'prism:doi', 'pii', 'abstract']
 
-    title=df.get('dc:title', "")
-    abstract = df.get('abstract', "")
-    authors = ["" for x in df.get('dc:title', "")]#empty list of proper length
-    source = [source_name for x in df.get('dc:title', "")]
+    title=[entry for entry in df.get('dc:title', filler)]
+    abstract = [re.sub(r"^Abstract","",str(entry)).strip() for entry in df.get('abstract', filler)]
+    abstract = [re.sub(r"\s{2,}", " ", str(entry)).strip() for entry in abstract]
+
+    authors = ["" for x in df.get('dc:title', filler)]#empty list of proper length
+    source = [source_name for x in df.get('dc:title', filler)]
 
     link = []
     url = []
-    for l in df.get('prism:doi', ""):
-        value="https://www.doi.org/{}".format(l)#piece together hyperlink
+    for l in df.get('prism:doi', filler):
+        if l == "Not available":
+            value="Not available"
+        else:
+            value="https://www.doi.org/{}".format(l)#piece together hyperlink
         link.append(value)#double, becasue the MA and rss feed files also have 2 different hyperlink fields
         url.append(value)
 
 
-    ID = df.get('prism:doi', "")
-    publication_date = df.get('prism:coverDate', "")  # there were 2 dates for each retrieved record, this is the earlier date
-    update_date=["" for x in df.get('dc:title', "")]#empty list of proper length
-    subject=["" for x in df.get('dc:title', "")]#empty list of proper length
-    publication_date_orig=["" for x in df.get('dc:title', "")]#empty list of proper length
+    ID = [entry for entry in df.get('prism:doi', filler)]
+    publication_date = [entry for entry in df.get('prism:coverDate', filler)]  # there were 2 dates for each retrieved record, this is the earlier date
+    update_date=["" for x in df.get('dc:title', filler)]#empty list of proper length
+    subject=["" for x in df.get('dc:title', filler)]#empty list of proper length
+    publication_date_orig=["" for x in df.get('dc:title', filler)]#empty list of proper length
 
     df = pd.DataFrame(list(zip(title, abstract, authors, link, url, source, ID, publication_date, update_date, subject,
                                publication_date_orig)),
@@ -199,7 +206,6 @@ def retrieve_elsevier(search_string, database):
 
     ##filenames = ['sciencedirect.csv', 'scopus.csv']
 
-    
     if database=="scopus":
         reformat_and_update('data/scopus.csv')#gets the abstracts and makes a csv file
         lsr_pipeline_format('data/scopus.csv', "Scopus")  # reformat the output again, this time for lsr pipeline
