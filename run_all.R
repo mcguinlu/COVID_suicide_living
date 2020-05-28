@@ -134,8 +134,8 @@ who_data <- read.csv("data/WHO_database.csv",
                              header = TRUE)
 
 colnames(who_data) <- tolower(colnames(who_data))
-colnames(who_data)[4] <- "date"
-colnames(who_data)[11] <- "link"
+colnames(who_data)[9] <- "date"
+colnames(who_data)[12] <- "link"
 colnames(who_data)[16] <- "subject"
 
 who_results <- perform_search(regex_query, who_data, fields = c("title","abstract"))
