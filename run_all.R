@@ -6,6 +6,12 @@
 # Author: 
 # Description: 
 
+# Set working directory
+if (interactive()==FALSE) {
+  setwd("C:/Users/lm16564/OneDrive - University of Bristol/Documents/rrr/COVID_suicide_living")
+}
+
+
 ###########################################################################
 # Define queries ----------------------------------------------------------
 ###########################################################################
@@ -28,11 +34,6 @@ source("R/library.R")
 # Load searching script
 source("R/perform_search.R")
 
-# Set working directory
-if (interactive()==FALSE) {
-WORKING_DIR=readLines("WORKING_DIR.txt")
-setwd(WORKING_DIR)
-}
 
 # Read in credentials
 GITHUB_USER <- readLines("GITHUB_USER.txt")
@@ -49,33 +50,33 @@ GITHUB_PASS <- readLines("GITHUB_PASS.txt")
 reticulate::py_run_file("data/retrieve_rss.py")
 
 # Update scopus dataset
-reticulate::py_run_file("data/els_retrieve.py")
+# reticulate::py_run_file("data/els_retrieve.py")
 
 ###########################################################################
 # Perform searches --------------------------------------------------------
 ###########################################################################
 #############
 ##data from scopus
-scop_data <- read.csv("data/scopus.csv", stringsAsFactors = FALSE, encoding = "UTF-8", header = TRUE)
-
-scop_data$date <- character(length = nrow(scop_data))
-
-for (row in 1:nrow(scop_data)) {
-  scop_data$date[row] <- paste0(rev(unlist(stringr::str_split(scop_data$publication_date[row], "/"))),collapse = "")
-}
-
-scop_results <- perform_search(regex_query, scop_data, fields = c("title","abstract"))
-
-# Clean results
-scop_clean_results <- data.frame(stringsAsFactors = FALSE, 
-                                title       = scop_results$title,   
-                                abstract    = scop_results$abstract,      
-                                authors     = scop_results$authors,     
-                                link        = scop_results$link,  
-                                date        = scop_results$date,  
-                                subject     = scop_results$subject,     
-                                source      = scop_results$Source      
-)
+# scop_data <- read.csv("data/scopus.csv", stringsAsFactors = FALSE, encoding = "UTF-8", header = TRUE)
+# 
+# scop_data$date <- character(length = nrow(scop_data))
+# 
+# for (row in 1:nrow(scop_data)) {
+#   scop_data$date[row] <- paste0(rev(unlist(stringr::str_split(scop_data$publication_date[row], "/"))),collapse = "")
+# }
+# 
+# scop_results <- perform_search(regex_query, scop_data, fields = c("title","abstract"))
+# 
+# # Clean results
+# scop_clean_results <- data.frame(stringsAsFactors = FALSE, 
+#                                 title       = scop_results$title,   
+#                                 abstract    = scop_results$abstract,      
+#                                 authors     = scop_results$authors,     
+#                                 link        = scop_results$link,  
+#                                 date        = scop_results$date,  
+#                                 subject     = scop_results$subject,     
+#                                 source      = scop_results$Source      
+# )
 #########################
 ##Data from Kaggle dataset, including microsoft Academic indexed Elsevier, PMC and Chan Zuckerberg Initiative records. Updated once a week, #TODO auto-update
 misc_data <- read.csv("data/MA_elsevier_database.csv", stringsAsFactors = FALSE, encoding = "UTF-8", header = TRUE)
@@ -185,7 +186,7 @@ pubmed_clean_results <- data.frame(stringsAsFactors = FALSE,
 all_results <- rbind(rx_clean_results,
                      who_clean_results,
                      pubmed_clean_results,
-                     scop_clean_results,
+                     # scop_clean_results,
                      misc_clean_results)
 
 all_results$initial_decision <- ""
