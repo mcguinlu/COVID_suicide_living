@@ -45,7 +45,7 @@ Requirements:
 
 
 ## Load configuration
-con_file = open("config.json")
+con_file = open("data/config.json")
 config = json.load(con_file)
 con_file.close()
 
