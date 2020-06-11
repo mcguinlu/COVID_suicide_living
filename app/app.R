@@ -292,7 +292,8 @@ server <- function(input, output, session) {
       "There were ",
       db$count('{"initial_decision": "Include"}'),
       " record(s) marked for further assessment, of which ",
-      db$count('{"initial_decision": "Include", "q12": "FALSE"}'),
+      db$count('{"initial_decision": "Include", "q12": "FALSE"}')+
+        db$count('{"initial_decision": "Include", "q12": "False"}'),
       " record(s) need expert assessment and data extraction."
     )
   })

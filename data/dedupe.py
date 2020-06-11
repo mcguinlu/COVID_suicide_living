@@ -5,6 +5,7 @@ from tqdm import tqdm
 from datetime import date
 import os
 
+os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
 
 def fuzzymatch(a, b, min_match):
     if fuzz.ratio(a, b) > min_match:  # matching ore than specified ratio
@@ -195,13 +196,13 @@ def dedupe_me(path, match_title, match_abstract, path_2=""):
             #if col not in list(df.columns):
                 #print(col)
 
-        dedupe_loop_additional(df, df_toadd, "new_and_deduped.csv", match_title, match_abstract)
+        dedupe_loop_additional(df, df_toadd, "data\\results\\new_and_deduped.csv", match_title, match_abstract)
     else:
-        dedupe_loop_within(df, "new_and_deduped.csv", match_title, match_abstract)
+        dedupe_loop_within(df, "data\\results\\new_and_deduped.csv", match_title, match_abstract)
 
 
-path = "all_results_tmp.csv"
-path_new = "new_results.csv"
+path = "data\\results\\all_results_tmp.csv"
+path_new = "data\\results\\new_results.csv"
 
 #alternative if you have problems with relative and absolute paths, try this! its the OS modeule that has an option to grab the current working directorys absolute path:
 

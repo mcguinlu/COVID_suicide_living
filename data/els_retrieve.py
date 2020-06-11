@@ -13,7 +13,9 @@ from elsapy.elssearch import ElsSearch
 import json
 import pandas as pd
 import re
+import os
 
+os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
 
 """
 Note: Create a config.json file in the format
@@ -75,7 +77,7 @@ def scidir_search(search_terms, database):
     doc_srch = ElsSearch(search_terms,database)
     doc_srch.execute(client, get_all = True)
     print("Retrieved {} from {}. Writing to file for further processing".format(len(doc_srch.results),database))
-    doc_srch.results_df.to_csv(str(database) + '.csv', index=None)
+    doc_srch.results_df.to_csv('data/' + str(database) + '.csv', index=None)
         
 
 def reformat_and_update(filename):
