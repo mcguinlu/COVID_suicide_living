@@ -52,6 +52,9 @@ reticulate::py_run_file("data/retrieve_rss.py")
 # Update scopus dataset
 reticulate::py_run_file("data/els_retrieve.py")
 
+# Update WHO dataset
+reticulate::py_run_file("data/who_rss.py")
+
 ###########################################################################
 # Perform searches --------------------------------------------------------
 ###########################################################################
@@ -128,29 +131,24 @@ rx_clean_results <- data.frame(stringsAsFactors = FALSE,
 # WHO searches
 #-#-#-#
 
-who_data <- read.csv("data/WHO_database.csv",
-                             encoding = "UTF-8",
-                             stringsAsFactors = FALSE,
-                             header = TRUE)
+who_data <- read.csv("data/who_rss.csv", stringsAsFactors = FALSE, 
+                 encoding = "UTF-8", header = TRUE)
 
-colnames(who_data) <- tolower(colnames(who_data))
-colnames(who_data)[9] <- "date"
-colnames(who_data)[12] <- "link"
-colnames(who_data)[16] <- "subject"
+colnames(who_data)[7] <- "date"
 
 who_results <- perform_search(regex_query, who_data, fields = c("title","abstract"))
 
-who_results$subject <- gsub("\\*","",who_results$subject)
+who_results$source <- gsub("True","medRxiv", gsub("False","WHO",rx_results$is_medRxiv))
 
 # Clean results
-who_clean_results <- data.frame(stringsAsFactors = FALSE, 
+who_clean_results <- data.frame(stringsAsFactors = FALSE,
                                 title       = who_results$title,   
                                 abstract    = who_results$abstract,      
                                 authors     = who_results$authors,     
                                 link        = who_results$link,  
                                 date        = who_results$date,  
                                 subject     = who_results$subject,     
-                                source      = rep("WHO",length(who_results$title)))
+                                source      = who_results$source)
 
 #-#-#-#
 # PubMed
