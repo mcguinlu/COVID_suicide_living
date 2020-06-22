@@ -91,21 +91,21 @@ def get_feed(link):
             #TODO: add specific language abstracts that should be retrieved, if applicable
             #
              ###########titles
-            if content_tag == "ti_en":
-                if ti == "":
-                    ti= content
-                else:
-                    ti = "{}\nTranslated title:\n{}".format(ti, content)
+            # if content_tag == "ti_en":
+            #     if ti == "":
+            #         ti= content
+            #     else:
+            #         ti = "{}\nTranslated title:\n{}".format(ti, content)
             if content_tag == "ti":
                 if ti == "":
                     ti= content
                 else:
-                    ti = "{}\nOriginal title:\n{}".format(ti, content)
-            if content_tag == "ti_es":
-                if ti == "":
-                    ti = content
-                else:
-                    ti = "{}\nSpanish title:\n{}".format(ti, content)
+                    ti = "{}\nOther title:\n{}".format(ti, content)
+            # if content_tag == "ti_es":
+            #     if ti == "":
+            #         ti = content
+            #     else:
+            #         ti = "{}\nSpanish title:\n{}".format(ti, content)
 
             #
             # TODO: add specific language titles that should be retrieved, if applicable
