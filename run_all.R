@@ -55,6 +55,9 @@ reticulate::py_run_file("data/els_retrieve.py")
 # Update WHO dataset
 reticulate::py_run_file("data/who_rss.py")
 
+# Update psy and soc dataset
+reticulate::py_run_file("data/osf_share_rss.py")
+
 ###########################################################################
 # Perform searches --------------------------------------------------------
 ###########################################################################
@@ -149,6 +152,52 @@ who_clean_results <- data.frame(stringsAsFactors = FALSE,
                                 date        = who_results$date,  
                                 subject     = who_results$subject,     
                                 source      = who_results$source)
+#-#-#-#
+# psyArxiv searches: perform search anywa because the osf search api returns some aditional results that can not be relevant
+#-#-#-#
+
+psyArxiv_data <- read.csv("data/psyArXiv_rss.csv", stringsAsFactors = FALSE, 
+                 encoding = "UTF-8", header = TRUE)
+
+colnames(psyArxiv_data)[7] <- "date"
+
+psyArxiv_results <- perform_search(regex_query, psyArxiv_data, fields = c("title","abstract"))
+
+psyArxiv_results$source <- gsub("True","medRxiv", gsub("False","Psy- and SocArXiv",rx_results$is_medRxiv))
+
+# Clean results
+psyArxiv_clean_results <- data.frame(stringsAsFactors = FALSE,
+                                title       = psyArxiv_results$title,   
+                                abstract    = psyArxiv_results$abstract,      
+                                authors     = psyArxiv_results$authors,     
+                                link        = psyArxiv_results$link,  
+                                date        = psyArxiv_results$date,  
+                                subject     = psyArxiv_results$subject,     
+                                source      = psyArxiv_results$source)
+
+
+#-#-#-#
+# socArxiv searches
+#-#-#-#
+
+socArxiv_data <- read.csv("data/socArXiv_rss.csv", stringsAsFactors = FALSE, 
+                 encoding = "UTF-8", header = TRUE)
+
+colnames(socArxiv_data)[7] <- "date"
+
+socArxiv_results <- perform_search(regex_query, socArxiv_data, fields = c("title","abstract"))
+
+socArxiv_results$source <- gsub("True","medRxiv", gsub("False","Psy- and SocArXiv",rx_results$is_medRxiv))
+
+# Clean results
+socArxiv_clean_results <- data.frame(stringsAsFactors = FALSE,
+                                title       = socArxiv_results$title,   
+                                abstract    = socArxiv_results$abstract,      
+                                authors     = socArxiv_results$authors,     
+                                link        = socArxiv_results$link,  
+                                date        = socArxiv_results$date,  
+                                subject     = socArxiv_results$subject,     
+                                source      = socArxiv_results$source)
 
 #-#-#-#
 # PubMed
@@ -183,6 +232,8 @@ all_results <- rbind(rx_clean_results,
                      who_clean_results,
                      pubmed_clean_results,
                      scop_clean_results,
+                     psyArxiv_clean_results,
+                     socArxiv_clean_results,
                      misc_clean_results)
 
 write.csv(all_results,"data/total_found.csv", row.names = FALSE)
