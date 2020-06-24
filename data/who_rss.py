@@ -213,6 +213,6 @@ def get_feed(link):
     return df
 
 print("Starting WHO retrieval")
-df = get_feed("https://search.bvsalud.org/global-literature-on-novel-coronavirus-2019-ncov/?output=xml&lang=en&from=0&sort=DATENTRY_DESC&format=summary&count=7000&fb=&page=1&skfp=&index=tw&q=")
+df = get_feed("https://search.bvsalud.org/global-literature-on-novel-coronavirus-2019-ncov/?output=xml&lang=en&from=0&sort=DATENTRY_DESC&format=summary&count=9000&fb=&page=1&skfp=&index=tw&q=")
 print("Writing to file in working directory: who_rss.csv")
 df.to_csv("who_rss.csv")
