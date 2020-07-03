@@ -9,6 +9,7 @@
 # Set working directory
 if (interactive()==FALSE) {
   setwd("C:/Users/lm16564/OneDrive - University of Bristol/Documents/rrr/COVID_suicide_living")
+  
 }
 
 
@@ -156,7 +157,7 @@ who_clean_results <- data.frame(stringsAsFactors = FALSE,
 # PubMed
 #-#-#-#
 
-abstracts_xml <- fetch_pubmed_data(pubmed_id_list = get_pubmed_ids(pudmed_query),)
+abstracts_xml <- fetch_pubmed_data(pubmed_id_list = get_pubmed_ids(pudmed_query))
 
 test <- articles_to_list(abstracts_xml)
 
