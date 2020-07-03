@@ -141,7 +141,8 @@ colnames(who_data)[7] <- "date"
 
 who_results <- perform_search(regex_query, who_data, fields = c("title","abstract"))
 
-who_results$source <- gsub("True","medRxiv", gsub("False","WHO",rx_results$is_medRxiv))
+who_results$subject <- gsub("\\*","",who_results$subject)
+who_results$source <- "WHO"
 
 # Clean results
 who_clean_results <- data.frame(stringsAsFactors = FALSE,
@@ -156,14 +157,14 @@ who_clean_results <- data.frame(stringsAsFactors = FALSE,
 # psyArxiv searches: perform search anywa because the osf search api returns some aditional results that can not be relevant
 #-#-#-#
 
-psyArxiv_data <- read.csv("data/psyArXiv_rss.csv", stringsAsFactors = FALSE, 
+psyArxiv_data <- read.csv("data/psyArXiv.csv", stringsAsFactors = FALSE, 
                  encoding = "UTF-8", header = TRUE)
 
 colnames(psyArxiv_data)[7] <- "date"
 
 psyArxiv_results <- perform_search(regex_query, psyArxiv_data, fields = c("title","abstract"))
 
-psyArxiv_results$source <- gsub("True","medRxiv", gsub("False","Psy- and SocArXiv",rx_results$is_medRxiv))
+psyArxiv_results$source <- "PsyArXiv"
 
 # Clean results
 psyArxiv_clean_results <- data.frame(stringsAsFactors = FALSE,
@@ -180,14 +181,14 @@ psyArxiv_clean_results <- data.frame(stringsAsFactors = FALSE,
 # socArxiv searches
 #-#-#-#
 
-socArxiv_data <- read.csv("data/socArXiv_rss.csv", stringsAsFactors = FALSE, 
+socArxiv_data <- read.csv("data/socArXiv.csv", stringsAsFactors = FALSE, 
                  encoding = "UTF-8", header = TRUE)
 
 colnames(socArxiv_data)[7] <- "date"
 
 socArxiv_results <- perform_search(regex_query, socArxiv_data, fields = c("title","abstract"))
 
-socArxiv_results$source <- gsub("True","medRxiv", gsub("False","Psy- and SocArXiv",rx_results$is_medRxiv))
+socArxiv_results$source <- "SocArXiv"
 
 # Clean results
 socArxiv_clean_results <- data.frame(stringsAsFactors = FALSE,
