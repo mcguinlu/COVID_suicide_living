@@ -52,6 +52,6 @@ soc_query="https://share.osf.io/api/v2/atom/?elasticQuery=%7B%22bool%22%3A%20%7B
 psa= get_records(psy_query, "PsyArXiv")#call each database querystring
 sca= get_records(soc_query, "SocArXiv")
 
-psa.to_csv("psyArXiv.csv")#save in working dir
-sca.to_csv("socArXiv.csv")
+psa.to_csv("data/psyArXiv.csv")#save in working dir
+sca.to_csv("data/socArXiv.csv")
 print("Saved resulting csv files in working directory")
