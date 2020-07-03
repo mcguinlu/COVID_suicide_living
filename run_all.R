@@ -157,7 +157,10 @@ who_clean_results <- data.frame(stringsAsFactors = FALSE,
 # PubMed
 #-#-#-#
 
-abstracts_xml <- fetch_pubmed_data(pubmed_id_list = get_pubmed_ids(pudmed_query))
+
+t <- get_pubmed_ids(pudmed_query)
+abstracts_xml <- fetch_pubmed_data(pubmed_id_list = t,
+                                   retmax = t$Count)
 
 test <- articles_to_list(abstracts_xml)
 
@@ -170,7 +173,8 @@ for (article in 2:length(test)) {
   pubmed_results<- rbind(pubmed_results,tmp)
 }
 
-pubmed_results$date <- paste0(pubmed_results$year,pubmed_results$month,pubmed_results$day)
+pubmed_results$date <- paste0(pubmed_results$year,
+                              pubmed_results$month,pubmed_results$day)
 
 pubmed_clean_results <- data.frame(stringsAsFactors = FALSE,
                                    title    = pubmed_results$title,   
@@ -255,12 +259,6 @@ new_results <- read.csv("data/results/new_and_deduped.csv",
   mutate_all(replace_na, replace = "") %>%
   distinct(link, .keep_all = TRUE)
   
-# Deduplicate based on DOI also
-# Captures thing like different languages and other inexplicable results
-# E.g. [https://doi.org/10.2196/19297]
-new_results <- new_results[which(new_results$link %notin% previous_results$link),]
-
-
 # Clean and prep for addition
 if (nrow(new_results)!=0) {
     new_results$initial_decision <- "Undecided"
