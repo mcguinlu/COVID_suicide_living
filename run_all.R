@@ -6,12 +6,6 @@
 # Author: 
 # Description: 
 
-# Set working directory
-if (interactive()==FALSE) {
-  setwd("C:/Users/lm16564/OneDrive - University of Bristol/Documents/rrr/COVID_suicide_living")
-  
-}
-
 ###########################################################################
 # Define queries ----------------------------------------------------------
 ###########################################################################
@@ -307,7 +301,12 @@ new_results <- read.csv("data/results/new_and_deduped.csv",
   select(-X) %>%
   mutate_all(replace_na, replace = "") %>%
   distinct(link, .keep_all = TRUE)
-  
+
+# Deduplicate based on DOI also
+# Captures thing like different languages and other inexplicable results
+# E.g. [https://doi.org/10.2196/19297]
+new_results <- new_results[which(new_results$link %notin% previous_results$link),]
+
 # Clean and prep for addition
 if (nrow(new_results)!=0) {
     new_results$initial_decision <- "Undecided"
@@ -354,7 +353,7 @@ all_results$ID <- as.numeric(all_results$ID)
                       readLines("app/password.txt"),
                       "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
   
-  db <- mongo(collection = collectionName,url = mongo_url)
+  db <- mongo(collection = collectionName, url = mongo_url)
   
   db_snapshot <- db$find()
   
