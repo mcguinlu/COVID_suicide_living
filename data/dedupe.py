@@ -24,7 +24,7 @@ def rowmatch(row, indexes, mydict, min_match_title, min_match_abstrct):
     except:
         return False, None
     try:
-        a1 = row["abstract"].strip().lower()
+        a1 = row["abstract"].strip().lower()[:495].strip()#crop to pubmed-length for matching purposes
     except:
         a1 = ""
 
@@ -42,7 +42,7 @@ def rowmatch(row, indexes, mydict, min_match_title, min_match_abstrct):
             if match:  # continue only if titles are matching
                 if a1 != "":
                     try:
-                        a2 = mydict["abstract"][i].strip().lower()
+                        a2 = mydict["abstract"][i].strip().lower()[:495].strip()#crop to pubmed-length for matching purposes
                     except:
                         a2 = ""
                         # print("matched title but found no second abstract")
@@ -170,6 +170,7 @@ def dedupe_loop_additional(original, new, name, min_match_title, min_match_abstr
 
     print("Replacing NA with empty spaces...")
     new_deduped= new_deduped.fillna("")
+    new_deduped['link'] = new_deduped['link'].apply(lambda x: re.sub("https://www.doi.org", "https://doi.org", x))
     new_deduped.to_csv(name)
     print("Saved the new, deduplicated rows as {}".format(name))
 
