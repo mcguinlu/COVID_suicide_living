@@ -91,7 +91,7 @@ ui <- tagList(
              actionButton("expertinclude", "Include"),
              actionButton("expertexclude", "Exclude"),
              selectInput("exclusion_reason", label = "Exclusion reason (the Exclude button won't work until this is completed.)",
-                          choices = c("","Single case report","Case series <5 cases","Suicide / self-harm not addressed","No original data presented","Other"))),
+                          choices = c("","Single case report","Case series <5 cases","Suicide / self-harm not addressed","No original data presented","Duplicate","Other"))),
              column(width = 6, align = "right",downloadButton("report", "Generate report for this record")
 )),
              tableOutput("expert_table"),
