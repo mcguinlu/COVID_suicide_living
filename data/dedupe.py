@@ -24,7 +24,7 @@ def rowmatch(row, indexes, mydict, min_match_title, min_match_abstrct):
     except:
         return False, None
     try:
-        a1 = row["abstract"].strip().lower()[:495].strip()#crop to pubmed-length for matching purposes
+        a1 = row["abstract"].strip().lower()[:495]
     except:
         a1 = ""
 
@@ -42,7 +42,7 @@ def rowmatch(row, indexes, mydict, min_match_title, min_match_abstrct):
             if match:  # continue only if titles are matching
                 if a1 != "":
                     try:
-                        a2 = mydict["abstract"][i].strip().lower()[:495].strip()#crop to pubmed-length for matching purposes
+                        a2 = mydict["abstract"][i].strip().lower()[:495]
                     except:
                         a2 = ""
                         # print("matched title but found no second abstract")
@@ -136,11 +136,10 @@ def dedupe_loop_additional(original, new, name, min_match_title, min_match_abstr
     masterdf = original.copy()
     new_deduped=pd.DataFrame(columns=list(new.columns))
     #
+    dupe_list=[]
 
-    previous=[]
-    duplicate= []
 
-    pd.set_option("display.max_colwidth", 5000)
+    pd.set_option("display.max_colwidth", 5000)#otherwise cell contents are cut away
     print("Iterating {} rows of new data to find duplicates".format(new.shape[0]))
     with tqdm(total=new.shape[0]) as pbar:
 
@@ -152,17 +151,32 @@ def dedupe_loop_additional(original, new, name, min_match_title, min_match_abstr
             if match:
                 # print(index)
                 # print(masterdf.at[index, "Deduplication_Notes"])
-                previous.append(re.sub(r"\s+", " ",row.to_string().replace("\n", "; ")))
-                duplicate.append(re.sub(r"\s+", " ",masterdf.loc[index].to_string().replace("\n", "; ")))
+                def dupe_report(new, orig):
+                    id=orig["ID"]
+                    source_orig = orig["source"]
+                    source_new = new["source"]
+                    title_orig=orig["title"]
+                    title_new = new["title"]
+                    abstract_new = new["abstract"]
+                    abstract_orig = orig["abstract"]
+                    author_new = new["authors"]
+                    author_orig = orig["authors"]
+                    link_new = new["link"]
+                    link_orig = orig["link"]
+                    date_added=date.today()
+                    #decision_orig=orig["initial_decision"]
 
+                    return pd.Series([id,source_orig,source_new,title_orig,title_new,abstract_orig,abstract_new,author_orig,author_new,link_orig,link_new, date_added], index=["ID","source original", "source new", "title original","title new","abstract original","abstract new","author original","author new","link original","link new", "date added"])
+
+
+                dupe_list.append(dupe_report(row, masterdf.loc[index]))#add a duplication report to the list
                 #print("For new entry:{}\nCHECK DUPLICATE STATUS [SOURCE:{} {}]".format(re.sub(r"\s+", " ",row.to_string().replace("\n", "; ")), str(masterdf.loc[index]["source"]),re.sub(r"\s+", " ",masterdf.loc[index].to_string().replace("\n", "; "))).strip())
 
 
-                # print(masterdf.at[index, "Deduplication_Notes"])
                 counter += 1
             else:
-                masterdf = masterdf.append(row, ignore_index=True)
-                new_deduped = new_deduped.append(row, ignore_index=True)
+                masterdf = masterdf.append(row, ignore_index=True)#add new entry to master data becasue it is not a duplicate
+                new_deduped = new_deduped.append(row, ignore_index=True)#add new entry to a data fram that just consists of new entries
                 # print(masterdf.head())
             pbar.update(1)
 
@@ -174,12 +188,19 @@ def dedupe_loop_additional(original, new, name, min_match_title, min_match_abstr
     new_deduped.to_csv(name)
     print("Saved the new, deduplicated rows as {}".format(name))
 
-    deduped = pd.DataFrame(columns=["Previous", "Duplicate"])
-    deduped["Previous"]= previous
-    deduped["Duplicate"] = duplicate
-    deduped.to_csv("duplication_report.csv")
+    #################Deduplication report: append new duplicates to it
+    dup_df=pd.read_csv("data\\results\\dedupe_report.csv")
+    counter=0
+    for e in dupe_list:
 
+        if not ((dup_df["ID"] == e[0]) & (dup_df['source original'] == e[1])& (dup_df['source new'] == e[2]) & (dup_df['abstract new'] == e[6]) & (dup_df['title new'] == e[4])).any():
+            dup_df = dup_df.append(e, ignore_index=True)#append new just if it is not in there already
+            counter +=1
+        # else:#duplicate of duplicate, can discard
+        #     print("Following duplicate of duplicate: \n{}\n".format(e[1]))
 
+    dup_df.to_csv("data\\results\\dedupe_report.csv",index=False)
+    print("Added {} records to the dedupe_report.csv".format(counter))
 
 def dedupe_me(path, match_title, match_abstract, path_2=""):
     df = pd.read_csv(path)
@@ -188,29 +209,19 @@ def dedupe_me(path, match_title, match_abstract, path_2=""):
         df_toadd = pd.read_csv(path_2)
         print("Reading the file new_results.csv that contains the new results. It has {} records, and its {} column names are {}".format(df_toadd.shape[0], len(list(df.columns)), list(df_toadd.columns)))
 
-        ###debugging column names
-        #for col in list(df.columns):
-            #if col not in list(df_toadd.columns):
-               # print(col)
-        #print("df 2")
-        #for col in list(df_toadd.columns):
-            #if col not in list(df.columns):
-                #print(col)
 
         dedupe_loop_additional(df, df_toadd, "data\\results\\new_and_deduped.csv", match_title, match_abstract)
     else:
+        #use this to deduplicate results within one single spreadsheet - not needed for LSR app since deduplication hapens based on a deduplicated database+ newly added records
         dedupe_loop_within(df, "data\\results\\new_and_deduped.csv", match_title, match_abstract)
 
 
-path = "data\\results\\all_results_tmp.csv"
+path = "data\\results\\all_results_tmp.csv"#is previous results but with some replacements
 path_new = "data\\results\\new_results.csv"
 
+if not os.path.exists("data\\results\\dedupe_report.csv"):
+    dupes=pd.DataFrame(columns=["ID","source original", "source new","title original","title new","abstract original","abstract new","author original","author new","link original","link new", "date added"])
+    dupes.to_csv("data\\results\\dedupe_report.csv",index=False)
 #alternative if you have problems with relative and absolute paths, try this! its the OS modeule that has an option to grab the current working directorys absolute path:
 
-######################FOR PATH PROBLEMS###########################
-#path = os.path.join(os.getcwd(), "all_results_tmp.csv")
-#path = os.path.join(os.getcwd(), "new_results.csv")
-
 dedupe_me(path, 95, 90, path_new)  # use this when adding data. creates the file "results/all_results_updated.csv"
-
-# dedupe_me(path, 95, 90)#USE THIS WHEN DEDUPING WITHIN< TO GET RID OF THE dupes in the previous screening!
