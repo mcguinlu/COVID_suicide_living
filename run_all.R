@@ -207,11 +207,11 @@ abstracts_xml <- fetch_pubmed_data(pubmed_id_list = t,
 
 test <- articles_to_list(abstracts_xml)
 
-pubmed_results <- article_to_df(test[1], getAuthors = FALSE, getKeywords = TRUE)
+pubmed_results <- article_to_df(test[1], getAuthors = FALSE, getKeywords = TRUE, max_chars = -1)
 pubmed_results$authors <- paste0(custom_grep(test[1],"LastName","char"),collapse = ", ")
 
 for (article in 2:length(test)) {
-  tmp <- article_to_df(test[article], getAuthors = FALSE, getKeywords = TRUE)
+  tmp <- article_to_df(test[article], getAuthors = FALSE, getKeywords = TRUE, max_chars = -1)
   tmp$authors <- paste0(custom_grep(test[article],"LastName","char"),collapse = ", ")
   pubmed_results<- rbind(pubmed_results,tmp)
 }
