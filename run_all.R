@@ -351,7 +351,7 @@ all_results$ID <- as.numeric(all_results$ID)
 # Take and save snapshot of the database, and add new results
   databaseName <- "COVID-suicide"
   collectionName <- "responses"
-  mongo_url <- paste0("mongodb+srv://mcguinlu:",
+  mongo_url <- paste0("mongodb+srv://allUsers:",
                       readLines("app/password.txt"),
                       "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
   

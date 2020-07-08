@@ -44,7 +44,7 @@ textAreaInput2 <- function (inputId, label, value = "", width = NULL, height = N
 databaseName <- "COVID-suicide"
 collectionName <- "responses"
 
-mongo_url <- paste0("mongodb+srv://mcguinlu:",
+mongo_url <- paste0("mongodb+srv://allUsers:",
              readLines("password.txt"),
              "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
 db <- mongo(collection = collectionName,
