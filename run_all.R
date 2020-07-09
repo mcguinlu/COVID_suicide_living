@@ -272,7 +272,7 @@ previous_results <- read.csv("data/results/all_results.csv",
                              header = TRUE)
 
 previous_results_tmp <- previous_results %>%
-  select(-expert_decision,-initial_decision,-ID)
+  select(-expert_decision,-initial_decision)#,-ID)
 
 previous_results_tmp$title <- gsub("\\.","",previous_results_tmp$title)
 all_results$title <- gsub("\\.","",all_results$title)

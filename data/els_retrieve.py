@@ -13,9 +13,9 @@ from elsapy.elssearch import ElsSearch
 import json
 import pandas as pd
 import re
-import os
+#import os
 
-os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
+#os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
 
 """
 Note: Create a config.json file in the format
@@ -49,6 +49,7 @@ Requirements:
 
 ## Load configuration
 con_file = open("data/config.json")
+
 config = json.load(con_file)
 con_file.close()
 
@@ -122,6 +123,7 @@ def reformat_and_update(filename):
     result["abstract"] = abstracts
 
     result.to_csv(filename, index = None)
+    print("Done reformatting,. Exiting now...")
         
     
 
@@ -152,6 +154,7 @@ def scopus_abs(scopus_id=None):
 
    
 def lsr_pipeline_format(filename, source_name):
+    print("Starting pipeline format..")
     df = pd.read_csv(filename)
     filler= ["Not available"]* df.shape[0]#list of row number length
 
@@ -216,6 +219,7 @@ def retrieve_elsevier(search_string, database):
         lsr_pipeline_format('data/sciencedirect.csv', "ScienceDirekt")#reformat the output again, this time for lsr pipeline
 
 
+####entry point
 with open("data/search_scopus.txt","r") as f:
     query = f.readline()
 

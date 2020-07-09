@@ -1,8 +1,8 @@
 import feedparser
 import pandas as pd
-import os
+#import os
 
-os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
+#os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
 
 NewsFeed = feedparser.parse("https://connect.biorxiv.org/relate/feed/181")
 entries = [e for e in NewsFeed.entries]

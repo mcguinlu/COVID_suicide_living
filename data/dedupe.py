@@ -3,9 +3,9 @@ import re
 from fuzzywuzzy import fuzz
 from tqdm import tqdm
 from datetime import date
-import os
+#import os
 
-os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
+#os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
 
 def fuzzymatch(a, b, min_match):
     if fuzz.ratio(a, b) > min_match:  # matching ore than specified ratio
