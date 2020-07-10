@@ -3,7 +3,7 @@ import re
 from fuzzywuzzy import fuzz
 from tqdm import tqdm
 from datetime import date
-#import os
+import os
 
 #os.chdir("C:\\Users\\lm16564\\OneDrive - University of Bristol\\Documents\\rrr\\COVID_suicide_living")
 
