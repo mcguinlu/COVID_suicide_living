@@ -310,10 +310,10 @@ new_results <- read.csv("data/results/new_and_deduped.csv",
 new_results <- new_results[which(new_results$link %notin% previous_results$link),]
 
 # Clean and prep for addition
+#create dummy columns here for new fields in app to match column expectation
 if (nrow(new_results)!=0) {
     new_results$initial_decision <- "Undecided"
-    new_results$expert_decision <- ""
-
+    new_results$expert_decision <- ""    
 
     if (max(previous_results$ID)==-Inf) {
       new_results$ID <- seq(1:nrow(new_results))
