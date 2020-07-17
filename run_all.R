@@ -312,12 +312,15 @@ new_results <- new_results[which(new_results$link %notin% previous_results$link)
 # Clean and prep for addition
 #create dummy columns here for new fields in app to match column expectation
 if (nrow(new_results)!=0) {
+    print("HERE")
     new_results$initial_decision <- "Undecided"
-    new_results$expert_decision <- ""    
+    new_results$expert_decision <- "" 
 
     if (max(previous_results$ID)==-Inf) {
+      print("HERE2")
       new_results$ID <- seq(1:nrow(new_results))
     } else {
+      print("HERE3")
       new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
     }
 }
@@ -366,7 +369,7 @@ all_results$ID <- as.numeric(all_results$ID)
   
   db$insert(new_results)
 
-
+  
 # Save other CSV files
   write.csv(all_results,
             file = file_name_all,
