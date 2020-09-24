@@ -71,5 +71,5 @@ for call in calls:
     master_df= pd.concat(frames, ignore_index=True)
 
 
-master_df.to_csv("bioRxiv_rss.csv")
+master_df.to_csv("data/bioRxiv_rss.csv")
 print(df.head())
