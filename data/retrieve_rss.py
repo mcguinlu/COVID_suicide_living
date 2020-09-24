@@ -2,7 +2,7 @@ import feedparser
 import pandas as pd
 import time
 
-calls=[x * 30 for x in range(0, 17)]#specify how man calls should me made. one call retrieves 30 papers, hence [x * 30 for x in range(0, 10)] means to retrieve last 300 papers, or 200 for 6000.
+calls=[x * 30 for x in range(0, 200)]#specify how man calls should me made. one call retrieves 30 papers, hence [x * 30 for x in range(0, 10)] means to retrieve last 300 papers, or 200 for 6000.
 master_df=pd.DataFrame(columns=["title", "abstract", "authors","link","ID","publication_date","update_date", "subject", "is_medRxiv"])#results from all calls will be merged here.
 wait=[x*300 for x in range(1,20)]
 
