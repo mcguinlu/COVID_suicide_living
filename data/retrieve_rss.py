@@ -34,13 +34,6 @@ for call in calls:
         title.append(e.get("title", "Not available"))
         ID.append(e.get("id", "Not available"))
         link.append(e.get("link", "Not available")).strip('"')
-# =============================================================================
-#         url=e.get("link", "Not available")
-#         if url[-1]=="\"":
-#             link.append(url[:-1])
-#         else:
-#             link.append(url)
-# =============================================================================
 
 
         if "medrxiv" in e.get("link", "Not available"):
@@ -59,7 +52,7 @@ for call in calls:
             print("The following bioRxiv entry has been updated!")
             print(e)
         try:
-            authors.append("Not available")#authors.append(("; ".join(a.get("name","Not available") for a in e.get("authors", [{"name": "Not available"}]))))
+            authors.append(("; ".join(a.get("name","Not available") for a in e.get("authors", [{"name": "Not available"}]))))
         except:
             print("Fixing empty author instance")
             authors.append(("; ".join(a["name"] for a in e["authors"] if "name" in a.keys())))

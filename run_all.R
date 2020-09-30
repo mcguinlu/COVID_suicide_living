@@ -326,6 +326,7 @@ if (nrow(new_results)!=0) {
 }
 
 new_results$o1 <- character(length = nrow(new_results))
+new_results$link <- str_replace_all(string = new_results$link, pattern = '"', replacement = "")
 
 all_results <- rbind(previous_results,
                      new_results)
@@ -335,6 +336,8 @@ all_results <- all_results %>%
   as.data.frame()
 
 all_results$ID <- as.numeric(all_results$ID)
+
+
 
 ###########################################################################
 # Export results --------------------------------------------------------
