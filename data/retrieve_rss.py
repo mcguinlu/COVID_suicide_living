@@ -33,7 +33,10 @@ for call in calls:
         #print(e.get("description", "Not available"))
         title.append(e.get("title", "Not available"))
         ID.append(e.get("id", "Not available"))
-        link.append(e.get("link", "Not available")).strip('"')
+        if link.append(e.get("link", "Not available")) is not None: 
+            link.append(e.get("link", "Not available")).strip('"')
+        else:
+            link.append(e.get("link", "Not available"))    
 
 
         if "medrxiv" in e.get("link", "Not available"):
