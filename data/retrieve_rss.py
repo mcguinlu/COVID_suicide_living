@@ -33,8 +33,8 @@ for call in calls:
         #print(e.get("description", "Not available"))
         title.append(e.get("title", "Not available"))
         ID.append(e.get("id", "Not available"))
-        if link.append(e.get("link", "Not available")) is not None: 
-            link.append(e.get("link", "Not available")).strip('"')
+        if e.get("link", None) is not None: 
+            link.append(e.get("link")).strip('"')
         else:
             link.append(e.get("link", "Not available"))    
 
