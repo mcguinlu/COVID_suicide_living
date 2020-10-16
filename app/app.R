@@ -231,7 +231,7 @@ server <- function(input, output, session) {
     if (nrow(db$find(find, fields = '{"_id": false,"ID": true}')) != 0) {
       data <-
         db$find(query = sprintf('{"ID" : %s}', as.numeric(input$ID)),
-                fields = '{"_id": false,"ID":true,"title": true, "abstract": true, "link": true, "initial_decision": true, "expert_decision": true}')
+                fields = '{"_id": false,"ID":true,"title": true, "authors":true, "source":true, "abstract": true, "link": true, "initial_decision": true, "expert_decision": true}')
       # Format hyperlink correctly
       data$link <-
         ifelse(data$link != "",
