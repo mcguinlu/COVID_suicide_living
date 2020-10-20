@@ -632,9 +632,66 @@ server <- function(input, output, session) {
       
     })
     
+    output$q14 <- renderUI({
+      expertdecision() 
+      req(input$expert_ID)
+      
+      tagList(
+        textAreaInput2("q14", "Date surveyed",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                                         fields = '{"_id": false,"q14": true}'))
+      )
+    })
+    
+    output$q15 <- renderUI({
+      expertdecision() 
+      req(input$expert_ID)
+      
+      tagList(
+        textAreaInput2("q15", "Scales used",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                                         fields = '{"_id": false,"q15": true}'))
+      )
+    })
+    
+    output$q16 <- renderUI({
+      expertdecision() 
+      req(input$expert_ID)
+      
+      tagList(
+        textAreaInput2("q16", "types of sampling",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                                              fields = '{"_id": false,"q16": true}'))
+      )
+    })
+    
+    output$q17 <- renderUI({
+      expertdecision() 
+      req(input$expert_ID)
+      
+      tagList(
+        textAreaInput2("q17", "Source of data",width = "100%", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                                            fields = '{"_id": false,"q17": true}'))
+      )
+    })
+    
+    output$q18 <- renderUI({
+      expertdecision()
+      req(input$expert_ID)
+      
+      tagList(
+        selectInput("q18",
+                    "Peer review",
+                   
+                    choices = sort(c("","Yes","No")),
+                    selected = db$find(sprintf(
+                      '{"ID" : %s}', input$expert_ID
+                    ),
+                    fields = '{"_id": false,"q18": true}')
+        )
+      )
+    })
+    
 
     # Capture inputs
-    lapply(c(0:4,6:13), function(i){
+    lapply(c(0:4,6:18), function(i){
       observeEvent(input[[paste0("q",i)]],{
         db$update(
           query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
@@ -748,7 +805,12 @@ output$report <- downloadHandler(
                    Strength =    input$q8,
                    Limit =       input$q9,
                    Policyimp =   input$q10,
-                   Researchimp = input$q11
+                   Researchimp = input$q11,
+                   surveydate =  input$q14,
+                   scalesused =  input$q15,
+                   samplingtype = input$q16,
+                   peerreview =  input$q17,
+                   datasource =  input$q18
     )
     # Knit the document, passing in the `params` list, and eval it in a
     # child of the global environment (this isolates the code in the document
