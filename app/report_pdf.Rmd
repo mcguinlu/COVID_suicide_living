@@ -9,7 +9,11 @@ params:
   Link: NA
   Design: NA
   Designother: NA
+  Surveydate: NA
   Setting: NA
+  Datasource: NA
+  Samplingtype: NA
+  Scalesused: NA
   Population: NA
   Outcome: NA
   Outcomeother: NA
@@ -51,9 +55,21 @@ params:
   
 `r params$Designother`  
 
+### Survey Date
+`r params$Surveydate` 
+
 ### Setting (country / region)  
   
 `r params$Setting`  
+
+### Data sourse
+`r params$Datasource`
+
+### Sampling types
+`r params$Smaplingtype`
+
+### Scales used
+`r params$Scalesused`
 
 ### Population studied  
   

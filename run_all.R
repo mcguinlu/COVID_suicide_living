@@ -252,12 +252,15 @@ for (row in 1:nrow(all_results)) {
   }
 }
 
-for (col in 0:13) {
+for (col in 0:20) {
   all_results[[paste0("q",col)]] <- character(length = nrow(all_results))
 }
 
 all_results$q12 <- "FALSE"
 all_results$q13 <- "FALSE"
+all_results$q18 <- "FALSE"
+all_results$q19 <- "FALSE"
+all_results$q20 <- "FALSE"
 
 all_results$exclusion_reason <- ""
 
