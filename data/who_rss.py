@@ -10,7 +10,7 @@ def get_feed(link):
 
     def getxml(link):
         url = link
-
+        data = None
 
         http = urllib3.PoolManager()
 

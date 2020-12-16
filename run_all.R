@@ -6,8 +6,6 @@
 # Author: 
 # Description: 
 
-
-
 ###########################################################################
 # Define queries ----------------------------------------------------------
 ###########################################################################
@@ -30,10 +28,15 @@ source("R/library.R")
 # Load searching script
 source("R/perform_search.R")
 
+source("R/sendMail.R")
+
 
 # Read in credentials
 GITHUB_USER <- readLines("GITHUB_USER.txt")
 GITHUB_PASS <- readLines("GITHUB_PASS.txt")
+MAIL_USER <- readLines("MAIL_USER.txt")
+MAIL_PASS <- readLines("MAIL_PASS.txt")
+MAIL_RECEPIENT <- readLines("MAIL_RECEPIENT.txt")
 
 # Define custom function
 `%notin%` <- Negate(`%in%`)
@@ -213,7 +216,10 @@ pubmed_results$authors <- paste0(custom_grep(test[1],"LastName","char"),collapse
 for (article in 2:length(test)) {
   tmp <- article_to_df(test[article], getAuthors = FALSE, getKeywords = TRUE, max_chars = -1)
   tmp$authors <- paste0(custom_grep(test[article],"LastName","char"),collapse = ", ")
-  pubmed_results<- rbind(pubmed_results,tmp)
+  if (is.data.frame(tmp) && nrow(tmp)>0){
+    pubmed_results<- rbind(pubmed_results,tmp)
+  }
+  
 }
 
 pubmed_results$date <- paste0(pubmed_results$year,
@@ -355,7 +361,7 @@ all_results$ID <- as.numeric(all_results$ID)
   file_name_all <- "data/results/all_results.csv"
   file_name_daily <- paste0("data/results/",current_date,"_results.csv")
   db_snapshot_name <- paste0("data/screening_snapshot/",current_date,"_snapshot.csv")
-
+  
 
 # Take and save snapshot of the database, and add new results
   databaseName <- "COVID-suicide"
@@ -402,31 +408,73 @@ all_results$ID <- as.numeric(all_results$ID)
             fileEncoding = "UTF-8",
             row.names = FALSE)
 
+  #pull remote repo before pushing
+  tryCatch(
+    expr = {
+      git2r::pull(repo = getwd(), credentials = cred_user_pass(username = GITHUB_USER,
+                                                                    password = GITHUB_PASS))
+      message("Repo pull successful")
+    },
+    error = function(e){
+      message("Git pull returned error")
+      print(e)
+    },
+    warning=function(w){
+      message("Git pull returned a warning")
+      print(w)
+    }
+  )
   
-# Add and commit files
-  add(repo = getwd(),
+  # Add and commit files
+  #add off git2r is masked by magrittr
+  git2r::add(repo = getwd(),
       path = file_name_all)
   
-  add(repo = getwd(),
+  git2r::add(repo = getwd(),
       path = file_name_daily)
   
-  add(repo = getwd(),
+  git2r::add(repo = getwd(),
       path = db_snapshot_name)
   
-  add(repo = getwd(),
+  git2r::add(repo = getwd(),
       path = "data/results/results_list.csv")
   
-  add(repo = getwd(),
+  git2r::add(repo = getwd(),
       path = "data/timestamp.txt")
   
-  commit(repo = getwd(),
-         message = paste0("Updated search results: ", current_time)
+  tryCatch(
+    expr = {
+      commit(repo = getwd(),
+             message = paste0("Updated search results: ", current_time))
+      
+      # Push the repo again
+      push(object = getwd(),
+           credentials = cred_user_pass(username = GITHUB_USER,
+                                        password = GITHUB_PASS))
+      message("Commit successful")
+    },
+    error = function(e){
+      message("Git commit/push returned error")
+      print(e)
+    },
+    warning=function(w){
+      message("Git commit/push returned a warning")
+      print(w)
+    }
   )
+  
+  #send update information out
+  sender <- c(MAIL_USER, MAIL_PASS)
+  daily_total <- dim(new_results)[1]
+  total_awaiting_initial_decision <- dim(db_snapshot %>%
+                                           filter(initial_decision == "Undecided"))[1]
+  recepient = MAIL_RECEPIENT
+  content <- c(total_awaiting_initial_decision, daily_total)
+  notification_email <- sendMail(sender, recepient, "COVID_SUICIDE_LSR Update", content)
+  
+  message("Done.")
 
   
-# Push the repo again
-  push(object = getwd(),
-       credentials = cred_user_pass(username = GITHUB_USER,
-                                    password = GITHUB_PASS))
+  
 
   
