@@ -16,6 +16,8 @@ library(markdown)
 library(shinyjs)
 library(stringr)
 
+
+
 textAreaInput2 <- function (inputId, label, value = "", width = NULL, height = NULL, 
                             cols = NULL, rows = NULL, placeholder = NULL, resize = NULL) 
 {
@@ -41,6 +43,7 @@ textAreaInput2 <- function (inputId, label, value = "", width = NULL, height = N
 #     "username" = "mcguinlu:",
 #     "password" = readLines("password.txt")
 # ))
+
 databaseName <- "COVID-suicide"
 collectionName <- "responses"
 
@@ -50,12 +53,19 @@ mongo_url <- paste0("mongodb+srv://allUsers:",
 db <- mongo(collection = collectionName,
             url = mongo_url)
 
+
+
+
+
+
+
 # Define UI for application that draws a histogram
 ui <- tagList(
   navbarPage(
     title = "COVID Suicide",
     id = "mytabsetpanel",
     theme = shinythemes::shinytheme("yeti"),
+    
     
     tabPanel(title = "All records",
              fluidRow(column(width = 8, h3(textOutput("total_no")),p("Click on the button on the right to download a snapshot of the database. To make decisions at the title/abstract stage, click \"Inital decision\". Records marked for inclusion at the inital stage will appear in the \"Expert decision\" tab for second review and data extraction.")),
@@ -111,7 +121,7 @@ ui <- tagList(
                                             uiOutput(paste0(
                                               "q", i
                                             )))
-                                         
+                                          
                                    ),
                                    column(width = 6,
                                           uiOutput("o1"),
@@ -130,6 +140,35 @@ ui <- tagList(
              DT::dataTableOutput("expert_records")
              
     ),
+    tabPanel(title = "Add record",
+             br(),
+             
+             h2("Adding a record to the database"),
+             h5("Please provide details about your new record, press 'Click to add!' below."),
+             hr(),
+             h5(" Please allow at least 10s after the click for the database to enter the record, a notification will be shown on screen if the record was added successfully."),
+             
+             h5("Clicking 'Click to add!' twice will add the record twice!"),
+             hr(),
+             h5("Your new record will automatically be included at initial assessment, and will be available directly within the expert assessment tab."),
+             
+             
+             textInput("title", label = h3("Title"), value = "", width = '70%'),
+             textInput("author", label = h3("Author(s)"), value = "", width = '70%'),
+             textAreaInput("abstract", label = h3("Abstract"), value = "", width = '100%', rows = 4),
+             
+             textInput("link", label = h3("Best link"), value = "", width = '70%'),
+             textInput("pubdate", label = h3("Publication date"), value = "", width = '70%'),
+             selectInput("variable", label=("Source"),
+                         c("Lancet Preprint",
+                           "Other")),
+             
+             hr(),
+             
+             actionButton("add_me", "Click to add!")
+             
+    ),
+    
     
     tabPanel(title = "About and Preferences",
              # Application title
@@ -153,9 +192,10 @@ ui <- tagList(
     
   ),
   tags$head(
+    
     tags$style(
       HTML(".shiny-notification {
-             position:fixed;
+            position:fixed;
              top: calc(5%);
              width:25%;
              height: 7%;
@@ -170,9 +210,86 @@ ui <- tagList(
 )
 
 # Define server logic required to draw a histogram
+
+
+add_my_record <- function(input) {
+  
+  
+  
+  date_today= format(Sys.time(), "%Y-%m-%d")
+  db_snapshot <- db$find()
+  id= max( db_snapshot$ID)+1
+  print(sprintf("Adding ID: %i and date %s", id,date_today))
+  
+  title <- c(input$title)
+  print(input$title)
+  abstract <- c(input$abstract)
+  print(input$abstract)
+  authors <- c(input$author)
+  print(input$author)
+  link <- c(input$link)
+  print(input$link)
+  date <- c(input$pubdate)
+  print(input$pubdate)
+  subject <- c("")
+  source <- c(input$variable)
+  print(input$variable)
+  initial_decision <- c("Include")
+  q0 <- c("")
+  q1 <- c("")
+  q2 <- c("")
+  q3 <- c("")
+  q4 <- c("")
+  q5 <- c("")
+  q6 <- c("")
+  q7 <- c("")
+  q8 <- c("")
+  q9 <- c("")
+  q10 <- c("")
+  q11 <- c("")
+  q12 <- c("FALSE")
+  q13 <- c("FALSE")
+  q14 <- c("")
+  q15 <- c("")
+  q16 <- c("")
+  q17 <- c("")
+  q18 <- c("FALSE")
+  q19 <- c("FALSE")
+  q20 <- c("FALSE")
+  exclusion_reason <- c("")
+  extraction_date <- c(date_today)
+  expert_decision <- c("")
+  ID <- c(id)
+  o1 <- c("")
+  
+  
+  
+  my_new_data <- data.frame(title, abstract, authors, link, date, subject, source, initial_decision,
+                            q0, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20,
+                            exclusion_reason, extraction_date, expert_decision,
+                            ID, o1, stringsAsFactors=FALSE)
+  
+  db$insert(my_new_data)
+  print("Data added!")
+  
+  showModal(modalDialog(
+    title = "Record added",
+    sprintf("Your new record was addedd successfully, you can find it in the expert assessment tab! Note: For plots of included/screened studies we are currently using the date where each record was ADDED to the database (i.e. today's date %s, not the publication date %s that you just provided). Your new record is: Title: <%s>; Abstract: <%s>; Author(s): <%s>; Link: <%s>; ID: <%i>", date_today,date, title,abstract,authors, link, id))
+  )
+  
+}
+
 server <- function(input, output, session) {
   
   waiter::waiter_hide()
+  
+  ##########################Add records
+  observeEvent(input$add_me, {
+    
+    
+    add_my_record(input)  
+  }
+  )
   
   # Initial initial_decision --------------------------------------------------------
   
@@ -638,7 +755,7 @@ server <- function(input, output, session) {
     
     tagList(
       textInput("q14", "Date surveyed", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
-                                                                            fields = '{"_id": false,"q14": true}'))
+                                                        fields = '{"_id": false,"q14": true}'))
     )
   })
   
@@ -834,8 +951,8 @@ server <- function(input, output, session) {
                      Datasource =  input$q17
                      
       )
-     # ,
-     # robscore = input$q19, peerreview =  input$q18
+      # ,
+      # robscore = input$q19, peerreview =  input$q18
       #crosssectional = input$q20
       # Knit the document, passing in the `params` list, and eval it in a
       # child of the global environment (this isolates the code in the document
