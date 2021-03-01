@@ -555,7 +555,7 @@ server <- function(input, output, session) {
       selectInput("q0",
                   "Assessor initals",
                   # Initials only
-                  choices = sort(c("","AJ","DG","ECE","COO","HE", "SZ","PM","NK","RW","KH")),
+                  choices = sort(c("","AJ","DG","ECE","DK","HE", "PM","NK","RW","KH")),
                   selected = db$find(sprintf(
                     '{"ID" : %s}', input$expert_ID
                   ),
