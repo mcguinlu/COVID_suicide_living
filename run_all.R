@@ -46,16 +46,60 @@ MAIL_RECEPIENT <- readLines("MAIL_RECEPIENT.txt")
 ###########################################################################
 
 # Update bioRxiv/medRxiv dataset
-reticulate::py_run_file("data/retrieve_rss.py")
+tryCatch(
+  expr = {
+    reticulate::py_run_file("data/retrieve_rss.py")
+  },
+  error = function(e){
+    message("Function return with error. Possibly caused by empty dataframe/xml")
+  },
+  warning = function(w){
+    message("Warnings exist")
+  }
+)
 
 # Update scopus dataset
-reticulate::py_run_file("data/els_retrieve.py")
+tryCatch(
+  expr = {
+    reticulate::py_run_file("data/els_retrieve.py")
+  },
+  error = function(e){
+    message("Function return with error. Possibly caused by empty dataframe/xml")
+  },
+  warning = function(w){
+    message("Warnings exist")
+  }
+)
+
 
 # Update WHO dataset
-reticulate::py_run_file("data/who_rss.py")
+tryCatch(
+  expr = {
+    reticulate::py_run_file("data/who_rss.py")
+  },
+  error = function(e){
+    message("Function return with error. Possibly caused by empty dataframe/xml")
+  },
+  warning = function(w){
+    message("Warnings exist")
+  }
+)
+
 
 # Update psy and soc dataset
-reticulate::py_run_file("data/osf_share_rss.py")
+tryCatch(
+  expr = {
+    reticulate::py_run_file("data/osf_share_rss.py")
+  },
+  error = function(e){
+    message("Function return with error. Possibly caused by empty dataframe/xml")
+  },
+  warning = function(w){
+    message("Warnings exist")
+  }
+)
+
+
 
 ###########################################################################
 # Perform searches --------------------------------------------------------
