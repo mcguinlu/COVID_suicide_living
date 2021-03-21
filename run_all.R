@@ -302,7 +302,7 @@ for (row in 1:nrow(all_results)) {
   }
 }
 
-for (col in 0:20) {
+for (col in 0:80) {
   all_results[[paste0("q",col)]] <- character(length = nrow(all_results))
 }
 
@@ -311,6 +311,17 @@ all_results$q13 <- "FALSE"
 all_results$q18 <- "FALSE"
 all_results$q19 <- "FALSE"
 all_results$q20 <- "FALSE"
+
+all_results$q22 <- "FALSE"
+all_results$q23 <- "FALSE"
+all_results$q24 <- "FALSE"
+all_results$q25 <- "FALSE"
+all_results$q26 <- "FALSE"
+all_results$q27 <- "FALSE"
+all_results$q28 <- "FALSE"
+all_results$q29 <- "FALSE"
+all_results$q30 <- "FALSE"
+
 
 all_results$exclusion_reason <- ""
 
@@ -409,7 +420,7 @@ all_results$ID <- as.numeric(all_results$ID)
 
 # Take and save snapshot of the database, and add new results
   databaseName <- "COVID-suicide"
-  collectionName <- "responses"
+  collectionName <- "responses_NEW_FIELDS"
   mongo_url <- paste0("mongodb+srv://allUsers:",
                       readLines("app/password.txt"),
                       "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")

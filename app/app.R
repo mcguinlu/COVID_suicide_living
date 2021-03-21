@@ -45,7 +45,8 @@ textAreaInput2 <- function (inputId, label, value = "", width = NULL, height = N
 # ))
 
 databaseName <- "COVID-suicide"
-collectionName <- "responses"
+#collectionName <- "responses"
+collectionName <- "responses_NEW_FIELDS"
 
 mongo_url <- paste0("mongodb+srv://allUsers:",
                     readLines("password.txt"),
@@ -101,7 +102,7 @@ ui <- tagList(
                              actionButton("expertinclude", "Include"),
                              actionButton("expertexclude", "Exclude"),
                              selectInput("exclusion_reason", label = "Exclusion reason (the Exclude button won't work until this is completed.)",
-                                         choices = c("","Single case report","Case series <5 cases","Suicide / self-harm not addressed","No original data presented","Duplicate","Other"))),
+                                         choices = c("","Single case report","Suicide / self-harm not addressed","No original data presented","Duplicate","Other"))),
                       column(width = 6, align = "right",downloadButton("report", "Generate report for this record")
                       )),
              tableOutput("expert_table"),
@@ -110,14 +111,14 @@ ui <- tagList(
                           column(
                             width = 3,
                             uiOutput("basic_header"),
-                            lapply(c(20,13,12,18:19,0,14,1:3), function(i)
+                            lapply(c(20,13,12,18:19,0,14,1,2,26,3, 21), function(i)
                               uiOutput(paste0("q", i)))
                           ),
                           column(width = 8,
                                  fluidRow(uiOutput("adv_header")),
                                  fluidRow(
                                    column(width = 6,
-                                          lapply(c(17,16,15,4,6,5), function(i)
+                                          lapply(c(17,16,15,4,22,23,24,25,6,5), function(i)
                                             uiOutput(paste0(
                                               "q", i
                                             )))
@@ -573,7 +574,7 @@ server <- function(input, output, session) {
     tagList(
       selectInput("q1",
                   "Study design",
-                  choices = c(sort(c("","Case series","Cross sectional survey","Case control","Cohort","Non-randomised intervention study","RCT","Qualitative","Nested case control")),"Other"),
+                  choices = c(sort(c("","Case series","Case series based on news reports","Case series: other","Cross sectional study","Cross sectional survey","Case control","Cohort","Non-randomised intervention study","RCT","Qualitative","Nested case control", "Time series study", "Before-after study","Repeat cross-sectional study","Predictive modeling of future trends","Google trends study","Social media study (e.g. Twitter analysis)", "Editorial / comment","Literature review/meta-analysis", "Single case report")),"Other"),
                   selected = db$find(sprintf(
                     '{"ID" : %s}', input$expert_ID
                   ),
@@ -598,8 +599,19 @@ server <- function(input, output, session) {
     
     
     tagList(
-      textInput("q3", "Setting (country/region)", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+      textInput("q3", "Setting (country free text)", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                                   fields = '{"_id": false,"q3": true}'))
+    )
+  })
+  
+  output$q21 <- renderUI({
+    expertdecision()  
+    req(input$expert_ID)
+    
+    
+    tagList(
+      textInput("q21", "Setting (region free text)", value = db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                                     fields = '{"_id": false,"q21": true}'))
     )
   })
   
@@ -621,7 +633,7 @@ server <- function(input, output, session) {
     
     
     tagList(
-      selectInput("q5", "Outcome(s) investigated",width = "100%", choices =  c("Suicide death", "Suicide attempts/selfharm", "Suicidal thoughts", "Other (please specify below)"), multiple = TRUE,
+      selectInput("q5", "Outcome(s) investigated",width = "100%", choices =  c("Suicide death", "Suicide attempts/selfharm", "Suicidal thoughts","Self-harm thoughts","Suicide risk", "Other (please specify below)"), multiple = TRUE,
                   selected = unlist(stringr::str_split(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
                                                                fields = '{"_id": false,"q5": true}'),", "))
       )
@@ -828,9 +840,83 @@ server <- function(input, output, session) {
     
   })
   
+  output$q22 <- renderUI({
+    expertdecision() 
+    req(input$expert_ID)
+    tagList(
+      checkboxInput("q22", "Children or adolescents or young adults (<25 years) in this study",
+                    value = as.logical(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                               fields = '{"_id": false,"q22": true}')
+                    )
+      )
+    )
+    
+  })
+  
+  output$q23 <- renderUI({
+    expertdecision() 
+    req(input$expert_ID)
+    tagList(
+      checkboxInput("q23", "Elderly people (55+ years) in this study",
+                    value = as.logical(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                               fields = '{"_id": false,"q23": true}')
+                    )
+      )
+    )
+    
+  })
+  output$q24 <- renderUI({
+    expertdecision() 
+    req(input$expert_ID)
+    tagList(
+      checkboxInput("q24", "Outcomes among healthcare or social care workers in this study",
+                    value = as.logical(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                               fields = '{"_id": false,"q24": true}')
+                    )
+      )
+    )
+    
+  })
+  output$q25 <- renderUI({
+    expertdecision() 
+    req(input$expert_ID)
+    tagList(
+      checkboxInput("q25", "People who’ve been infected with COVID-19 in this study",
+                    value = as.logical(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                               fields = '{"_id": false,"q25": true}')
+                    )
+      )
+    )
+    
+  })
+  
+  # Outcome investigated
+  output$q26 <- renderUI({
+    expertdecision()  
+    req(input$expert_ID)
+    
+    
+    tagList(
+      selectInput("q26", "Setting: select countries",width = "100%", choices =  c('Aruba', 'Afghanistan', 'Angola', 'Anguilla', 'Åland Islands', 'Albania', 'Andorra', 'United Arab Emirates', 'Argentina', 'Armenia', 'American Samoa', 'Antarctica', 'French Southern Territories', 'Antigua and Barbuda', 'Australia', 'Austria', 'Azerbaijan', 'Burundi', 'Belgium', 'Benin', 'Bonaire', 'Sint Eustatius and Saba', 'Burkina Faso', 'Bangladesh', 'Bulgaria', 'Bahrain', 'Bahamas', 'Bosnia and Herzegovina', 'Saint Barthélemy', 'Belarus', 'Belize', 'Bermuda', 'Bolivia; Plurinational State of', 'Brazil', 'Barbados', 'Brunei Darussalam', 'Bhutan', 'Bouvet Island', 'Botswana', 'Central African Republic', 'Canada', 'Cocos (Keeling) Islands', 'Switzerland', 'Chile', 'China', 'Côte d\'Ivoire', 'Cameroon', 'Congo; The Democratic Republic of the', 'Congo', 'Cook Islands', 'Colombia', 'Comoros', 'Cabo Verde', 'Costa Rica', 'Cuba', 'Curaçao', 'Christmas Island', 'Cayman Islands', 'Cyprus', 'Czechia', 'Germany', 'Djibouti', 'Dominica', 'Denmark', 'Dominican Republic', 'Algeria', 'Ecuador', 'Egypt', 'Eritrea', 'Western Sahara', 'Spain', 'Estonia', 'Ethiopia', 'Finland', 'Fiji', 'Falkland Islands (Malvinas)', 'France', 'Faroe Islands', 'Micronesia; Federated States of', 'Gabon', 'United Kingdom', 'Georgia', 'Guernsey', 'Ghana', 'Gibraltar', 'Guinea', 'Guadeloupe', 'Gambia', 'Guinea-Bissau', 'Equatorial Guinea', 'Greece', 'Grenada', 'Greenland', 'Guatemala', 'French Guiana', 'Guam', 'Guyana', 'Hong Kong', 'Heard Island and McDonald Islands', 'Honduras', 'Croatia', 'Haiti', 'Hungary', 'Indonesia', 'Isle of Man', 'India', 'British Indian Ocean Territory', 'Ireland', 'Iran; Islamic Republic of', 'Iraq', 'Iceland', 'Israel', 'Italy', 'Jamaica', 'Jersey', 'Jordan', 'Japan', 'Kazakhstan', 'Kenya', 'Kyrgyzstan', 'Cambodia', 'Kiribati', 'Saint Kitts and Nevis', 'Korea; Republic of', 'Kuwait', 'Lao People\'s Democratic Republic', 'Lebanon', 'Liberia', 'Libya', 'Saint Lucia', 'Liechtenstein', 'Sri Lanka', 'Lesotho', 'Lithuania', 'Luxembourg', 'Latvia', 'Macao', 'Saint Martin (French part)', 'Morocco', 'Monaco', 'Moldova; Republic of', 'Madagascar', 'Maldives', 'Mexico', 'Marshall Islands', 'North Macedonia', 'Mali', 'Malta', 'Myanmar', 'Montenegro', 'Mongolia', 'Northern Mariana Islands', 'Mozambique', 'Mauritania', 'Montserrat', 'Martinique', 'Mauritius', 'Malawi', 'Malaysia', 'Mayotte', 'Namibia', 'New Caledonia', 'Niger', 'Norfolk Island', 'Nigeria', 'Nicaragua', 'Niue', 'Netherlands', 'Norway', 'Nepal', 'Nauru', 'New Zealand', 'Oman', 'Pakistan', 'Panama', 'Pitcairn', 'Peru', 'Philippines', 'Palau', 'Papua New Guinea', 'Poland', 'Puerto Rico', 'Korea; Democratic People\'s Republic of', 'Portugal', 'Paraguay', 'Palestine; State of', 'French Polynesia', 'Qatar', 'Réunion', 'Romania', 'Russian Federation', 'Rwanda', 'Saudi Arabia', 'Sudan', 'Senegal', 'Singapore', 'South Georgia and the South Sandwich Islands', 'Saint Helena; Ascension and Tristan da Cunha', 'Svalbard and Jan Mayen', 'Solomon Islands', 'Sierra Leone', 'El Salvador', 'San Marino', 'Somalia', 'Saint Pierre and Miquelon', 'Serbia', 'South Sudan', 'Sao Tome and Principe', 'Suriname', 'Slovakia', 'Slovenia', 'Sweden', 'Eswatini', 'Sint Maarten (Dutch part)', 'Seychelles', 'Syrian Arab Republic', 'Turks and Caicos Islands', 'Chad', 'Togo', 'Thailand', 'Tajikistan', 'Tokelau', 'Turkmenistan', 'Timor-Leste', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Tuvalu', 'Taiwan; Province of China', 'Tanzania; United Republic of', 'Uganda', 'Ukraine', 'United States Minor Outlying Islands', 'Uruguay', 'United States', 'Uzbekistan', 'Holy See (Vatican City State)', 'Saint Vincent and the Grenadines', 'Venezuela; Bolivarian Republic of', 'Virgin Islands; British', 'Virgin Islands; U.S.', 'Vietnam', 'Vanuatu', 'Wallis and Futuna', 'Samoa', 'Yemen', 'South Africa', 'Zambia', 'Zimbabwe', "Other (please specify below)"), multiple = TRUE,
+                  selected = unlist(stringr::str_split(db$find(sprintf('{"ID" : %s}',as.numeric(input$expert_ID)),
+                                                               fields = '{"_id": false,"q26": true}'),", "))
+      )
+    )
+  })
+  
+  # Update outcome, collapsing for proper saving
+  # This is why it isn't in the lapply call later on!!!!!!!!!!!!!!!!!!!!!!!!!! If adding more fields, specify it in the lapply, and dont include q26 in there
+  observeEvent(input$q26,{
+    db$update(
+      query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
+      update = sprintf('{"$set":{"q26":"%s"}}', paste0(input$q26,collapse = ", "))
+    )
+  })
+  
+  
   
   # Capture inputs
-  lapply(c(0:4,6:20), function(i){
+  lapply(c(0:4,6:25), function(i){
     observeEvent(input[[paste0("q",i)]],{
       db$update(
         query = sprintf('{"ID" : %s}', as.numeric(input$expert_ID)),
