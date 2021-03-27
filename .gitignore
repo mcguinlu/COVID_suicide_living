@@ -6,4 +6,6 @@ data/config.json
 /*.txt
 app/*.txt
 data/config.json
+*.txt
+data/results/dedupe_report.csv
 
