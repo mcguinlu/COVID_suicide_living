@@ -495,7 +495,7 @@ all_results$ID <- as.numeric(all_results$ID)
       path = "data/results/results_list.csv")
   
   git2r::add(repo = getwd(),
-      path = "data/timestamp.txt")
+      path = "data/results/timestamp.txt")
   
   tryCatch(
     expr = {
@@ -531,5 +531,9 @@ all_results$ID <- as.numeric(all_results$ID)
 
   
   
-
+#git add data/results/results_list.csv
+#git add data/results/all_results.csv
+#git add git add data/results/2021-03-28_results.csv
+#git add data/screening_snapshot/2021-03-28_snapshot.csv
+#git add data/resutls/timestamp.txt
   
