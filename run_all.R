@@ -533,7 +533,9 @@ all_results$ID <- as.numeric(all_results$ID)
   
 #git add data/results/results_list.csv
 #git add data/results/all_results.csv
-#git add git add data/results/2021-03-28_results.csv
+#git add data/results/2021-03-28_results.csv
 #git add data/screening_snapshot/2021-03-28_snapshot.csv
-#git add data/resutls/timestamp.txt
+#git add data/results/timestamp.txt
+#git commit -m "Updated search results: 2021-03-28"
+#git push -u origin master
   
