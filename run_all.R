@@ -502,11 +502,13 @@ all_results$ID <- as.numeric(all_results$ID)
       commit(repo = getwd(),
              message = paste0("Updated search results: ", current_time))
       
+      message("Commit successful")
+      
       # Push the repo again
       push(object = getwd(),
            credentials = cred_user_pass(username = GITHUB_USER,
                                         password = GITHUB_PASS))
-      message("Commit successful")
+      message("Push successful")
     },
     error = function(e){
       message("Git commit/push returned error")
