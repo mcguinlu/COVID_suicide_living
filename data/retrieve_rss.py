@@ -6,12 +6,24 @@ calls=[x * 30 for x in range(0, 17)]#specify how man calls should me made. one c
 master_df=pd.DataFrame(columns=["title", "abstract", "authors","link","ID","publication_date","update_date", "subject", "is_medRxiv"])#results from all calls will be merged here.
 wait=[x*300 for x in range(1,20)]
 
+import ssl
+
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    # Legacy Python that doesn't verify HTTPS certificates by default
+    pass
+else:
+    # Handle target environment that doesn't support HTTPS verification
+    ssl._create_default_https_context = _create_unverified_https_context
+
 for call in calls:
     if call in wait:
         print('pausing for 10 secs...')
         time.sleep(10)
     feed_address="https://api.biorxiv.org/covid19/{}/xml".format(call)
     NewsFeed = feedparser.parse(feed_address)
+    #print(NewsFeed)
     entries = [e for e in NewsFeed.entries]
 
 
@@ -33,7 +45,7 @@ for call in calls:
         #print(e.get("description", "Not available"))
         title.append(e.get("title", "Not available"))
         ID.append(e.get("id", "Not available"))
-        link.append(e.get("link", "Not available"))    
+        link.append(e.get("link", "Not available"))
 
 
         if "medrxiv" in e.get("link", "Not available"):
@@ -73,4 +85,4 @@ for call in calls:
 
 
 master_df.to_csv("data/bioRxiv_rss.csv")
-print(df.head())
+#print(df.head())

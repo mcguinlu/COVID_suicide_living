@@ -1,9 +1,10 @@
+
 import feedparser
 import pandas as pd
 from datetime import date
 
 
-def get_records(query, db_name):#create lists of data for a data frame from a given query, and return the frame
+def get_records(query, db_name):  # create lists of data for a data frame from a given query, and return the frame
     title = []
     abstract = []
     authors = []
@@ -14,13 +15,25 @@ def get_records(query, db_name):#create lists of data for a data frame from a gi
     ID = []
     is_medRxiv = []
 
+    import ssl
+
+    try:
+        _create_unverified_https_context = ssl._create_unverified_context
+    except AttributeError:
+        # Legacy Python that doesn't verify HTTPS certificates by default
+        pass
+    else:
+        # Handle target environment that doesn't support HTTPS verification
+        ssl._create_default_https_context = _create_unverified_https_context
+
+
     NewsFeed = feedparser.parse(query)
+    #print(NewsFeed)
 
     entries = [e for e in NewsFeed.entries]
-    for e in entries:#loop through results. Note: will only ever do up to 250 resilts per query. adjust dates and make multiple queries if needed!!!!!!!!!!!!
+    for e in entries:  # loop through results. Note: will only ever do up to 250 resilts per query. adjust dates and make multiple queries if needed!!!!!!!!!!!!
 
-
-        title.append(e.get("title", "Not available"))#get method to avoid key errors
+        title.append(e.get("title", "Not available"))  # get method to avoid key errors
         abstract.append(e.get("summary", "Not available"))
         authors.append(e.get("author", "Not available"))
         link.append(e.get("link", "Not available"))
@@ -28,30 +41,37 @@ def get_records(query, db_name):#create lists of data for a data frame from a gi
         ID.append(e.get("id", "Not available"))
         is_medRxiv.append("False")
 
-        t=e.get("published", "Not available").split("T")[0]#returns date with time etc attached, so split it here casue we dont need result to the minute...
+        t = e.get("published", "Not available").split("T")[
+            0]  # returns date with time etc attached, so split it here casue we dont need result to the minute...
         publication_date.append(t)
 
-
-        terms = "; ".join([en["term"] for en in e.get("tags", [{"term": "Not available"}])])#parse as list and join as string all keywords.
+        terms = "; ".join([en["term"] for en in e.get("tags", [
+            {"term": "Not available"}])])  # parse as list and join as string all keywords.
         subject.append(terms)
-
 
     print('Number of RSS posts in {} : {}'.format(db_name, len(entries)))
     df = pd.DataFrame(list(zip(title, abstract, authors, link, ID, publication_date, update_date, subject, is_medRxiv)),
-                      columns=["title", "abstract", "authors", "link", "ID", "publication_date", "update_date","subject", "is_medRxiv"])
+                      columns=["title", "abstract", "authors", "link", "ID", "publication_date", "update_date",
+                               "subject", "is_medRxiv"])
     return df
+
 
 ############
 print("Getting records from Psy- and SocArXives...")
-start="2020-06-08"#dates to complete the query. Make a new query for each datasource, onlu need to adjust the database of interest in the format statment of the strings below
-end=date.today()
-psy_query="https://share.osf.io/api/v2/atom/?elasticQuery=%7B%22bool%22%3A%20%7B%22must%22%3A%20%7B%22query_string%22%3A%20%7B%22query%22%3A%20%22(mental%20health%20OR%20selfharm*%20OR%20self-harm*%20OR%20selfinjur*%20OR%20self-injur*%20OR%20selfmutilat*%20OR%20self-mutilat*%20OR%20suicid*%20OR%20parasuicid*%20OR%20suicide%20OR%20suicidal%20ideation%20OR%20attempted%20suicide%20OR%20drug%20overdose%20OR%20self%3Fpoisoning%20OR%20self-injurious%20behavio%3Fr%20OR%20self%3Fmutilation%20OR%20automutilation%20OR%20suicidal%20behavio%3Fr%20OR%20self%3Fdestructive%20behavio%3Fr%20OR%20self%3Fimmolation%20OR%20cutt*%20OR%20head%3Fbang%20OR%20overdose%20OR%20self%3Fimmolat*%20OR%20self%3Finflict*%20OR%20hopelessness%20OR%20powerlessness%20OR%20helplessness%20OR%20negative%20attitude%20OR%20emotional%20negativism%20OR%20pessimism%20OR%20depress*%20OR%20hopelessness%20depression%20OR%20passivity%20OR%20sad-affect%20OR%20sadness%20OR%20decreased%20affect%20OR%20cognitive%20rigidity%20OR%20suicidality%20OR%20suicide%20ideation)%20AND%20(coronavirus%20disease%3F19%20OR%20sars%3Fcov%3F2%20OR%20mers%3Fcov%20OR%2019%3Fncov%20OR%202019%3Fncov%20OR%20n%3Fcov%20OR%20COVID-19%20OR%20COVID%202019%20OR%20coronavirus%20OR%20nCoV%20OR%20HCoV)%22%7D%7D%2C%20%22filter%22%3A%20%5B%7B%22term%22%3A%20%7B%22sources%22%3A%20%22{}%22%7D%7D%2C%20%7B%22range%22%3A%20%7B%22date%22%3A%20%7B%22gte%22%3A%20%22{}%7C%7C%2Fd%22%2C%20%22lte%22%3A%20%22{}%7C%7C%2Fd%22%7D%7D%7D%5D%7D%7D".format("PsyArXiv",start,end)
-soc_query="https://share.osf.io/api/v2/atom/?elasticQuery=%7B%22bool%22%3A%20%7B%22must%22%3A%20%7B%22query_string%22%3A%20%7B%22query%22%3A%20%22(mental%20health%20OR%20selfharm*%20OR%20self-harm*%20OR%20selfinjur*%20OR%20self-injur*%20OR%20selfmutilat*%20OR%20self-mutilat*%20OR%20suicid*%20OR%20parasuicid*%20OR%20suicide%20OR%20suicidal%20ideation%20OR%20attempted%20suicide%20OR%20drug%20overdose%20OR%20self%3Fpoisoning%20OR%20self-injurious%20behavio%3Fr%20OR%20self%3Fmutilation%20OR%20automutilation%20OR%20suicidal%20behavio%3Fr%20OR%20self%3Fdestructive%20behavio%3Fr%20OR%20self%3Fimmolation%20OR%20cutt*%20OR%20head%3Fbang%20OR%20overdose%20OR%20self%3Fimmolat*%20OR%20self%3Finflict*%20OR%20hopelessness%20OR%20powerlessness%20OR%20helplessness%20OR%20negative%20attitude%20OR%20emotional%20negativism%20OR%20pessimism%20OR%20depress*%20OR%20hopelessness%20depression%20OR%20passivity%20OR%20sad-affect%20OR%20sadness%20OR%20decreased%20affect%20OR%20cognitive%20rigidity%20OR%20suicidality%20OR%20suicide%20ideation)%20AND%20(coronavirus%20disease%3F19%20OR%20sars%3Fcov%3F2%20OR%20mers%3Fcov%20OR%2019%3Fncov%20OR%202019%3Fncov%20OR%20n%3Fcov%20OR%20COVID-19%20OR%20COVID%202019%20OR%20coronavirus%20OR%20nCoV%20OR%20HCoV)%22%7D%7D%2C%20%22filter%22%3A%20%5B%7B%22term%22%3A%20%7B%22sources%22%3A%20%22{}%22%7D%7D%2C%20%7B%22range%22%3A%20%7B%22date%22%3A%20%7B%22gte%22%3A%20%22{}%7C%7C%2Fd%22%2C%20%22lte%22%3A%20%22{}%7C%7C%2Fd%22%7D%7D%7D%5D%7D%7D".format("SocArXiv",start,end)
+start = "2021-12-12"  # dates to complete the query. Make a new query for each datasource, onlu need to adjust the database of interest in the format statment of the strings below
+end = date.today()
+print("Date today should be in the format yyyy-mm-dd. Check that it is: {}".format(end))
 
+psy_query = "https://share.osf.io/api/v2/feeds/atom/?elasticQuery=%7B%22bool%22%3A+%7B%22must%22%3A+%7B%22query_string%22%3A+%7B%22query%22%3A+%22%28mental+health+OR+selfharm%2A+OR+self-harm%2A+OR+selfinjur%2A+OR+self-injur%2A+OR+selfmutilat%2A+OR+self-mutilat%2A+OR+suicid%2A+OR+parasuicid%2A+OR+suicide+OR+suicidal+ideation+OR+attempted+suicide+OR+drug+overdose+OR+self%3Fpoisoning+OR+self-injurious+behavio%3Fr+OR+self%3Fmutilation+OR+automutilation+OR+suicidal+behavio%3Fr+OR+self%3Fdestructive+behavio%3Fr+OR+self%3Fimmolation+OR+cutt%2A+OR+head%3Fbang+OR+overdose+OR+self%3Fimmolat%2A+OR+self%3Finflict%2A+OR+hopelessness+OR+powerlessness+OR+helplessness+OR+negative+attitude+OR+emotional+negativism+OR+pessimism+OR+depress%2A+OR+hopelessness+depression+OR+passivity+OR+sad-affect+OR+sadness+OR+decreased+affect+OR+cognitive+rigidity+OR+suicidality+OR+suicide+ideation%29+AND+%28coronavirus+disease%3F19+OR+sars%3Fcov%3F2+OR+mers%3Fcov+OR+19%3Fncov+OR+2019%3Fncov+OR+n%3Fcov+OR+COVID-19+OR+COVID+2019+OR+coronavirus+OR+nCoV+OR+HCoV%29%22%7D%7D%2C+%22filter%22%3A+%5B%7B%22term%22%3A+%7B%22sources%22%3A+%22PsyArXiv%22%7D%7D%2C+%7B%22range%22%3A+%7B%22date%22%3A+%7B%22gte%22%3A+%22{}%7C%7C%2Fd%22%2C+%22lte%22%3A+%22{}%7C%7C%2Fd%22%7D%7D%7D%5D%7D%7D".format(start,end)
 
-psa= get_records(psy_query, "PsyArXiv")#call each database querystring
-sca= get_records(soc_query, "SocArXiv")
+#print(psy_query)
+soc_query = "https://share.osf.io/api/v2/feeds/atom/?elasticQuery=%7B%22bool%22%3A+%7B%22must%22%3A+%7B%22query_string%22%3A+%7B%22query%22%3A+%22%28mental+health+OR+selfharm%2A+OR+self-harm%2A+OR+selfinjur%2A+OR+self-injur%2A+OR+selfmutilat%2A+OR+self-mutilat%2A+OR+suicid%2A+OR+parasuicid%2A+OR+suicide+OR+suicidal+ideation+OR+attempted+suicide+OR+drug+overdose+OR+self%3Fpoisoning+OR+self-injurious+behavio%3Fr+OR+self%3Fmutilation+OR+automutilation+OR+suicidal+behavio%3Fr+OR+self%3Fdestructive+behavio%3Fr+OR+self%3Fimmolation+OR+cutt%2A+OR+head%3Fbang+OR+overdose+OR+self%3Fimmolat%2A+OR+self%3Finflict%2A+OR+hopelessness+OR+powerlessness+OR+helplessness+OR+negative+attitude+OR+emotional+negativism+OR+pessimism+OR+depress%2A+OR+hopelessness+depression+OR+passivity+OR+sad-affect+OR+sadness+OR+decreased+affect+OR+cognitive+rigidity+OR+suicidality+OR+suicide+ideation%29+AND+%28coronavirus+disease%3F19+OR+sars%3Fcov%3F2+OR+mers%3Fcov+OR+19%3Fncov+OR+2019%3Fncov+OR+n%3Fcov+OR+COVID-19+OR+COVID+2019+OR+coronavirus+OR+nCoV+OR+HCoV%29%22%7D%7D%2C+%22filter%22%3A+%5B%7B%22term%22%3A+%7B%22sources%22%3A+%22SocArXiv%22%7D%7D%2C+%7B%22range%22%3A+%7B%22date%22%3A+%7B%22gte%22%3A+%22{}%7C%7C%2Fd%22%2C+%22lte%22%3A+%22{}%7C%7C%2Fd%22%7D%7D%7D%5D%7D%7D".format(
+     start, end)
+#print(soc_query)
+#print(soc_query)
+psa = get_records(psy_query, "PsyArXiv")  # call each database querystring
+sca = get_records(soc_query, "SocArXiv")
 
-psa.to_csv("data/psyArXiv.csv")#save in working dir
+psa.to_csv("data/psyArXiv.csv")  # save in working dir
 sca.to_csv("data/socArXiv.csv")
 print("Saved resulting csv files in working directory")

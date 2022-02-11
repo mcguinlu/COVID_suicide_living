@@ -44,7 +44,7 @@ MAIL_RECEPIENT <- readLines("MAIL_RECEPIENT.txt")
 ###########################################################################
 # Update underlying data sets ---------------------------------------------
 ###########################################################################
-
+reticulate::py_run_file("data/retrieve_rss.py")
 # Update bioRxiv/medRxiv dataset
 tryCatch(
   expr = {
@@ -205,7 +205,18 @@ psyArxiv_data <- read.csv("data/psyArXiv.csv", stringsAsFactors = FALSE,
 
 colnames(psyArxiv_data)[7] <- "date"
 
-psyArxiv_results <- perform_search(regex_query, psyArxiv_data, fields = c("title","abstract"))
+tryCatch(
+  expr = {
+    psyArxiv_results <- perform_search(regex_query, psyArxiv_data, fields = c("title","abstract"))
+  },
+  error = function(e){
+    message("Psych error")
+  },
+  warning = function(w){
+    message("Psych Warnings")
+  }
+  )
+  
 
 psyArxiv_results$source <- "PsyArXiv"
 
@@ -229,7 +240,17 @@ socArxiv_data <- read.csv("data/socArXiv.csv", stringsAsFactors = FALSE,
 
 colnames(socArxiv_data)[7] <- "date"
 
-socArxiv_results <- perform_search(regex_query, socArxiv_data, fields = c("title","abstract"))
+tryCatch(
+  expr = {
+    socArxiv_results <- perform_search(regex_query, socArxiv_data, fields = c("title","abstract"))
+  },
+  error = function(e){
+    message("SocArxiv error")
+  },
+  warning = function(w){
+    message("SocArxiv Warnings")
+  }
+)
 
 socArxiv_results$source <- "SocArXiv"
 
@@ -425,7 +446,7 @@ all_results$ID <- as.numeric(all_results$ID)
                       readLines("app/password.txt"),
                       "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
   
-  db <- mongo(collection = collectionName, url = mongo_url)
+   db <- mongo(collection = collectionName, url = mongo_url)
   
   db_snapshot <- db$find()
   
@@ -482,11 +503,11 @@ all_results$ID <- as.numeric(all_results$ID)
   
   # Add and commit files
   #add off git2r is masked by magrittr
-  git2r::add(repo = getwd(),
-      path = file_name_all)
+  #git2r::add(repo = getwd(),
+    #  path = file_name_all)
   
-  git2r::add(repo = getwd(),
-      path = file_name_daily)
+ # git2r::add(repo = getwd(),
+ #     path = file_name_daily)
   
   git2r::add(repo = getwd(),
       path = db_snapshot_name)
@@ -496,6 +517,16 @@ all_results$ID <- as.numeric(all_results$ID)
   
   git2r::add(repo = getwd(),
       path = "data/results/timestamp.txt")
+  git2r::add(repo = getwd(),
+             path="run_all.R")
+  git2r::add(repo = getwd(),
+             path="data/osf_share_rss.py")
+  git2r::add(repo = getwd(),
+             path="data/retrieve_rss.py")
+  git2r::add(repo = getwd(),
+             path="data/search_regexes_pubmed.txt")
+  git2r::add(repo = getwd(),
+             path="data/search_scopus.txt")
   
   tryCatch(
     expr = {
@@ -533,7 +564,6 @@ all_results$ID <- as.numeric(all_results$ID)
 
   
   
-#git add data/results/results_list.csv && git add data/results/all_results.csv && git add data/results/2021-04-01_results.csv && git add data/screening_snapshot/2021-04-01_snapshot.csv && git add data/results/timestamp.txt 
-#git commit -m "Updated search results: 2021-04-01" 
-#git push -u origin master
+#git add data/results/results_list.csv && git add data/results/all_results.csv && git add data/results/2021-04-03_results.csv && git add data/screening_snapshot/2021-04-03_snapshot.csv && git add data/results/timestamp.txt 
+#git commit -m "Updated search results: 2021-04-05" && git push -u origin master
   
