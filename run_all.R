@@ -506,8 +506,8 @@ all_results$ID <- as.numeric(all_results$ID)
   #git2r::add(repo = getwd(),
     #  path = file_name_all)
   
- # git2r::add(repo = getwd(),
- #     path = file_name_daily)
+  git2r::add(repo = getwd(),
+      path = file_name_daily)
   
   #git2r::add(repo = getwd(),
   #    path = db_snapshot_name)
