@@ -118,13 +118,13 @@ scop_results <- perform_search(regex_query, scop_data, fields = c("title","abstr
 
 # Clean results
 scop_clean_results <- data.frame(stringsAsFactors = FALSE,
-                                title       = scop_results$title,
-                                abstract    = scop_results$abstract,
-                                authors     = scop_results$authors,
-                                link        = scop_results$link,
-                                date        = scop_results$date,
-                                subject     = scop_results$subject,
-                                source      = scop_results$Source
+                                 title       = scop_results$title,
+                                 abstract    = scop_results$abstract,
+                                 authors     = scop_results$authors,
+                                 link        = scop_results$link,
+                                 date        = scop_results$date,
+                                 subject     = scop_results$subject,
+                                 source      = scop_results$Source
 )
 #########################
 ##Data from Kaggle dataset, including microsoft Academic indexed Elsevier, PMC and Chan Zuckerberg Initiative records. Updated once a week, #TODO auto-update
@@ -140,13 +140,13 @@ misc_results <- perform_search(regex_query, misc_data, fields = c("title","abstr
 
 # Clean results
 misc_clean_results <- data.frame(stringsAsFactors = FALSE, 
-                                title       = misc_results$title,   
-                                abstract    = misc_results$abstract,      
-                                authors     = misc_results$authors,     
-                                link        = misc_results$link,  
-                                date        = misc_results$date,  
-                                subject     = misc_results$subject,     
-                                source      = misc_results$Source      
+                                 title       = misc_results$title,   
+                                 abstract    = misc_results$abstract,      
+                                 authors     = misc_results$authors,     
+                                 link        = misc_results$link,  
+                                 date        = misc_results$date,  
+                                 subject     = misc_results$subject,     
+                                 source      = misc_results$Source      
 )
 
 #############
@@ -155,7 +155,7 @@ misc_clean_results <- data.frame(stringsAsFactors = FALSE,
 #-#-#-#
 
 rx_data <- read.csv("data/bioRxiv_rss.csv", stringsAsFactors = FALSE, 
-                 encoding = "UTF-8", header = TRUE)
+                    encoding = "UTF-8", header = TRUE)
 
 colnames(rx_data)[7] <- "date"
 
@@ -166,19 +166,19 @@ rx_results$source <- gsub("True","medRxiv", gsub("False","bioRxiv",rx_results$is
 # Clean results
 rx_clean_results <- data.frame(stringsAsFactors = FALSE,
                                title       = rx_results$title,   
-                                abstract    = rx_results$abstract,      
-                                authors     = rx_results$authors,     
-                                link        = rx_results$link,  
-                                date        = rx_results$date,  
-                                subject     = rx_results$subject,     
-                                source      = rx_results$source)
+                               abstract    = rx_results$abstract,      
+                               authors     = rx_results$authors,     
+                               link        = rx_results$link,  
+                               date        = rx_results$date,  
+                               subject     = rx_results$subject,     
+                               source      = rx_results$source)
 
 #-#-#-#
 # WHO searches
 #-#-#-#
 
 who_data <- read.csv("data/who_rss.csv", stringsAsFactors = FALSE, 
-                 encoding = "UTF-8", header = TRUE)
+                     encoding = "UTF-8", header = TRUE)
 
 colnames(who_data)[7] <- "date"
 
@@ -201,7 +201,7 @@ who_clean_results <- data.frame(stringsAsFactors = FALSE,
 #-#-#-#
 
 psyArxiv_data <- read.csv("data/psyArXiv.csv", stringsAsFactors = FALSE, 
-                 encoding = "UTF-8", header = TRUE)
+                          encoding = "UTF-8", header = TRUE)
 
 colnames(psyArxiv_data)[7] <- "date"
 
@@ -215,20 +215,20 @@ tryCatch(
   warning = function(w){
     message("Psych Warnings")
   }
-  )
-  
+)
+
 
 psyArxiv_results$source <- "PsyArXiv"
 
 # Clean results
 psyArxiv_clean_results <- data.frame(stringsAsFactors = FALSE,
-                                title       = psyArxiv_results$title,   
-                                abstract    = psyArxiv_results$abstract,      
-                                authors     = psyArxiv_results$authors,     
-                                link        = psyArxiv_results$link,  
-                                date        = psyArxiv_results$date,  
-                                subject     = psyArxiv_results$subject,     
-                                source      = psyArxiv_results$source)
+                                     title       = psyArxiv_results$title,   
+                                     abstract    = psyArxiv_results$abstract,      
+                                     authors     = psyArxiv_results$authors,     
+                                     link        = psyArxiv_results$link,  
+                                     date        = psyArxiv_results$date,  
+                                     subject     = psyArxiv_results$subject,     
+                                     source      = psyArxiv_results$source)
 
 
 #-#-#-#
@@ -236,7 +236,7 @@ psyArxiv_clean_results <- data.frame(stringsAsFactors = FALSE,
 #-#-#-#
 
 socArxiv_data <- read.csv("data/socArXiv.csv", stringsAsFactors = FALSE, 
-                 encoding = "UTF-8", header = TRUE)
+                          encoding = "UTF-8", header = TRUE)
 
 colnames(socArxiv_data)[7] <- "date"
 
@@ -256,13 +256,13 @@ socArxiv_results$source <- "SocArXiv"
 
 # Clean results
 socArxiv_clean_results <- data.frame(stringsAsFactors = FALSE,
-                                title       = socArxiv_results$title,   
-                                abstract    = socArxiv_results$abstract,      
-                                authors     = socArxiv_results$authors,     
-                                link        = socArxiv_results$link,  
-                                date        = socArxiv_results$date,  
-                                subject     = socArxiv_results$subject,     
-                                source      = socArxiv_results$source)
+                                     title       = socArxiv_results$title,   
+                                     abstract    = socArxiv_results$abstract,      
+                                     authors     = socArxiv_results$authors,     
+                                     link        = socArxiv_results$link,  
+                                     date        = socArxiv_results$date,  
+                                     subject     = socArxiv_results$subject,     
+                                     source      = socArxiv_results$source)
 
 #-#-#-#
 # PubMed
@@ -397,17 +397,17 @@ new_results <- new_results[which(new_results$link %notin% previous_results$link)
 # Clean and prep for addition
 #create dummy columns here for new fields in app to match column expectation
 if (nrow(new_results)!=0) {
+  
+  new_results$initial_decision <- "Undecided"
+  new_results$expert_decision <- "" 
+  
+  if (max(previous_results$ID)==-Inf) {
     
-    new_results$initial_decision <- "Undecided"
-    new_results$expert_decision <- "" 
-
-    if (max(previous_results$ID)==-Inf) {
-     
-      new_results$ID <- seq(1:nrow(new_results))
-    } else {
-     
-      new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
-    }
+    new_results$ID <- seq(1:nrow(new_results))
+  } else {
+    
+    new_results$ID <- seq((max(previous_results$ID)+1),(max(previous_results$ID)+ nrow(new_results)))
+  }
 }
 
 new_results$o1 <- character(length = nrow(new_results))
@@ -429,141 +429,140 @@ all_results$ID <- as.numeric(all_results$ID)
 ###########################################################################
 
 #Set-up
-  current_time <- format(Sys.time(), "%Y-%m-%d %H:%M")
-  current_date <- format(Sys.time(), "%Y-%m-%d")
-  
-  writeLines(current_time, "data/results/timestamp.txt")
-  
-  file_name_all <- "data/results/all_results.csv"
-  file_name_daily <- paste0("data/results/",current_date,"_results.csv")
-  db_snapshot_name <- paste0("data/screening_snapshot/",current_date,"_snapshot.csv")
-  
+current_time <- format(Sys.time(), "%Y-%m-%d %H:%M")
+current_date <- format(Sys.time(), "%Y-%m-%d")
+
+writeLines(current_time, "data/results/timestamp.txt")
+
+file_name_all <- "data/results/all_results.csv"
+file_name_daily <- paste0("data/results/",current_date,"_results.csv")
+db_snapshot_name <- paste0("data/screening_snapshot/",current_date,"_snapshot.csv")
+
 
 # Take and save snapshot of the database, and add new results
-  databaseName <- "COVID-suicide"
-  collectionName <- "responses_NEW_FIELDS"
-  mongo_url <- paste0("mongodb+srv://allUsers:",
-                      readLines("app/password.txt"),
-                      "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
-  
-   db <- mongo(collection = collectionName, url = mongo_url)
-  
-  db_snapshot <- db$find()
-  
-  write.csv(db_snapshot,
-            file = db_snapshot_name,
-            fileEncoding = "UTF-8",
-            row.names = FALSE)
-  
-  db$insert(new_results)
+databaseName <- "COVID-suicide"
+collectionName <- "responses_NEW_FIELDS"
+mongo_url <- paste0("mongodb+srv://allUsers:",
+                    readLines("app/password.txt"),
+                    "@covid-suicide-ndgul.mongodb.net/test?retryWrites=true&w=majority")
 
-  
+db <- mongo(collection = collectionName, url = mongo_url)
+
+db_snapshot <- db$find()
+
+write.csv(db_snapshot,
+          file = db_snapshot_name,
+          fileEncoding = "UTF-8",
+          row.names = FALSE)
+
+db$insert(new_results)
+
+
 # Save other CSV files
-  write.csv(all_results,
-            file = file_name_all,
-            fileEncoding = "UTF-8",
-            row.names = FALSE)
-  
-  write.csv(new_results,
-            file = file_name_daily,
-            fileEncoding = "UTF-8",
-            row.names = FALSE)
+write.csv(all_results,
+          file = file_name_all,
+          fileEncoding = "UTF-8",
+          row.names = FALSE)
+
+write.csv(new_results,
+          file = file_name_daily,
+          fileEncoding = "UTF-8",
+          row.names = FALSE)
 
 
 # Add new file name to list
-  file_name_list <- read.csv("data/results/results_list.csv", 
-                             stringsAsFactors = FALSE)
-  
-  file_name_df <- data.frame(file_name = paste0(current_date,"results.csv"),
-                             stringsAsFactors = FALSE )
-  file_name_list <- rbind(file_name_list, file_name_df)
-  file_name_list <- unique(file_name_list)
-  
-  write.csv(file_name_list,
-            file = "data/results/results_list.csv",
-            fileEncoding = "UTF-8",
-            row.names = FALSE)
+file_name_list <- read.csv("data/results/results_list.csv", 
+                           stringsAsFactors = FALSE)
 
-  #pull remote repo before pushing
-  tryCatch(
-    expr = {
-      git2r::pull(repo = getwd(), credentials = cred_user_pass(username = GITHUB_USER,
-                                                                    password = GITHUB_PASS))
-      message("Repo pull successful")
-    },
-    error = function(e){
-      message("Git pull returned error")
-      print(e)
-    },
-    warning=function(w){
-      message("Git pull returned a warning")
-      print(w)
-    }
-  )
-  
-  # Add and commit files
-  #add off git2r is masked by magrittr
-  #git2r::add(repo = getwd(),
-    #  path = file_name_all)
-  
-  git2r::add(repo = getwd(),
-      path = file_name_daily)
-  
-  #git2r::add(repo = getwd(),
-  #    path = db_snapshot_name)
-  
-  git2r::add(repo = getwd(),
-      path = "data/results/results_list.csv")
-  
-  git2r::add(repo = getwd(),
-      path = "data/results/timestamp.txt")
-  git2r::add(repo = getwd(),
-             path="run_all.R")
-  git2r::add(repo = getwd(),
-             path="data/osf_share_rss.py")
-  git2r::add(repo = getwd(),
-             path="data/retrieve_rss.py")
-  git2r::add(repo = getwd(),
-             path="data/search_regexes_pubmed.txt")
-  git2r::add(repo = getwd(),
-             path="data/search_scopus.txt")
-  
-  tryCatch(
-    expr = {
-      commit(repo = getwd(),
-             message = paste0("Updated search results: ", current_time))
-      
-      message("Commit successful")
-      
-      # Push the repo again
-      push(object = getwd(),
-           credentials = cred_user_pass(username = GITHUB_USER,
-                                        password = GITHUB_PASS))
-      message("Push successful")
-    },
-    error = function(e){
-      message("Git commit/push returned error")
-      print(e)
-    },
-    warning=function(w){
-      message("Git commit/push returned a warning")
-      print(w)
-    }
-  )
-  
-  #send update information out
-  sender <- c(MAIL_USER, MAIL_PASS)
-  daily_total <- dim(new_results)[1]
-  total_awaiting_initial_decision <- dim(db_snapshot %>%
-                                           filter(initial_decision == "Undecided"))[1]
-  recepient = MAIL_RECEPIENT
-  content <- c(total_awaiting_initial_decision, daily_total)
-  notification_email <- sendMail(sender, recepient, "COVID_SUICIDE_LSR Update", content)
-  
-  message("Done.")
+file_name_df <- data.frame(file_name = paste0(current_date,"results.csv"),
+                           stringsAsFactors = FALSE )
+file_name_list <- rbind(file_name_list, file_name_df)
+file_name_list <- unique(file_name_list)
 
-  
-  
+write.csv(file_name_list,
+          file = "data/results/results_list.csv",
+          fileEncoding = "UTF-8",
+          row.names = FALSE)
+
+#pull remote repo before pushing
+tryCatch(
+  expr = {
+    git2r::pull(repo = getwd(), credentials = cred_user_pass(username = GITHUB_USER,
+                                                             password = GITHUB_PASS))
+    message("Repo pull successful")
+  },
+  error = function(e){
+    message("Git pull returned error")
+    print(e)
+  },
+  warning=function(w){
+    message("Git pull returned a warning")
+    print(w)
+  }
+)
+
+# Add and commit files
+#add off git2r is masked by magrittr
+#git2r::add(repo = getwd(),
+#  path = file_name_all)
+
+git2r::add(repo = getwd(),
+           path = file_name_daily)
+
+#git2r::add(repo = getwd(),
+#    path = db_snapshot_name)
+
+git2r::add(repo = getwd(),
+           path = "data/results/results_list.csv")
+
+git2r::add(repo = getwd(),
+           path = "data/results/timestamp.txt")
+git2r::add(repo = getwd(),
+           path="run_all.R")
+git2r::add(repo = getwd(),
+           path="data/osf_share_rss.py")
+git2r::add(repo = getwd(),
+           path="data/retrieve_rss.py")
+git2r::add(repo = getwd(),
+           path="data/search_regexes_pubmed.txt")
+git2r::add(repo = getwd(),
+           path="data/search_scopus.txt")
+
+tryCatch(
+  expr = {
+    commit(repo = getwd(),
+           message = paste0("Updated search results: ", current_time))
+    
+    message("Commit successful")
+    
+    # Push the repo again
+    push(object = getwd(),
+         credentials = cred_user_pass(username = GITHUB_USER,
+                                      password = GITHUB_PASS))
+    message("Push successful")
+  },
+  error = function(e){
+    message("Git commit/push returned error")
+    print(e)
+  },
+  warning=function(w){
+    message("Git commit/push returned a warning")
+    print(w)
+  }
+)
+
+#send update information out
+sender <- c(MAIL_USER, MAIL_PASS)
+daily_total <- dim(new_results)[1]
+total_awaiting_initial_decision <- dim(db_snapshot %>%
+                                         filter(initial_decision == "Undecided"))[1]
+recepient = MAIL_RECEPIENT
+content <- c(total_awaiting_initial_decision, daily_total)
+notification_email <- sendMail(sender, recepient, "COVID_SUICIDE_LSR Update", content)
+
+message("Done.")
+
+
+
 #git add data/results/results_list.csv && git add data/results/all_results.csv && git add data/results/2021-04-03_results.csv && git add data/screening_snapshot/2021-04-03_snapshot.csv && git add data/results/timestamp.txt 
 #git commit -m "Updated search results: 2021-04-05" && git push -u origin master
-  
