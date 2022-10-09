@@ -565,4 +565,4 @@ message("Done.")
 
 
 #git add data/results/results_list.csv && git add data/results/all_results.csv && git add data/results/2021-04-03_results.csv && git add data/screening_snapshot/2021-04-03_snapshot.csv && git add data/results/timestamp.txt 
-#git commit -m "Updated search results: 2021-04-05" && git push -u origin maste
+#git commit -m "Updated search results: 2021-04-05" && git push -u origin master
