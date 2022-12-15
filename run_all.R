@@ -384,9 +384,11 @@ reticulate::py_run_file("data/dedupe.py")
 
 # Read in deduplicated
 new_results <- read.csv("data/results/new_and_deduped.csv",
-                        stringsAsFactors = FALSE) %>%
-  select(-X) %>%
-  mutate_all(replace_na, replace = "") %>%
+                        stringsAsFactors = FALSE) #%>%
+new_results[is.na(new_results)] = ""
+
+new_results <- select(new_results, -X) %>%
+  #mutate_all(replace_na, replace = "") %>%
   distinct(link, .keep_all = TRUE)
 
 # Deduplicate based on DOI also
@@ -417,7 +419,7 @@ all_results <- rbind(previous_results,
                      new_results)
 
 all_results <- all_results %>% 
-  mutate_all(~ replace_na(.x, "")) %>%
+  mutate_all(~ replace_na(as.character(.x), "")) %>% #added as.char
   as.data.frame()
 
 all_results$ID <- as.numeric(all_results$ID)
